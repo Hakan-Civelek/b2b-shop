@@ -4,7 +4,7 @@ export default {
     return {
       items: [
         {
-          label: 'Home',
+          label: 'Profile',
           icon: 'pi pi-home',
           route: '/'
         },
@@ -14,44 +14,49 @@ export default {
           route: '/products'
         },
         {
-          label: 'Projects',
-          icon: 'pi pi-search',
-          items: [
-            {
-              label: 'Core',
-              icon: 'pi pi-bolt',
-              shortcut: '⌘+S'
-            },
-            {
-              label: 'Blocks',
-              icon: 'pi pi-server',
-              shortcut: '⌘+B'
-            },
-            {
-              label: 'UI Kit',
-              icon: 'pi pi-pencil',
-              shortcut: '⌘+U'
-            },
-            {
-              separator: true
-            },
-            {
-              label: 'Templates',
-              icon: 'pi pi-palette',
-              items: [
-                {
-                  label: 'Apollo',
-                  icon: 'pi pi-palette',
-                  badge: 2
-                },
-                {
-                  label: 'Ultima',
-                  icon: 'pi pi-palette',
-                  badge: 3
-                }
-              ]
-            }
-          ]
+          label: 'Orders',
+          icon: 'pi pi-shopping-cart',
+          route: '/orders'
+        },
+        {
+          label: 'Settings',
+          icon: 'pi pi-cog',
+          route: '/settings'
+        },
+        {
+          label: 'Logout',
+          icon: 'pi pi-power-off',
+          route: '/logout',
+          command: () => {
+            this.logout()
+          }
+        }
+      ],
+      categories: [
+        {
+          label: 'Electronics',
+          icon: 'pi pi-desktop',
+          route: '/products'
+        },
+        {
+          label: 'Furniture',
+          icon: 'pi pi-book',
+          route: '/products'
+        },
+        {
+          label: 'Clothing',
+          icon: 'pi pi-shopping-cart',
+          route: '/products'
+        },
+        {
+          label: 'Sports',
+          icon: 'pi pi-briefcase',
+          route: '/products'
+        },
+        {
+          label: 'Health',
+          icon: 'pi pi-heart',
+          route: '/products'
         }
       ],
       darkTheme: false
@@ -59,7 +64,6 @@ export default {
   },
   methods: {
     routePath(event) {
-      console.log(event)
       this.$router.push(event)
     },
     changeTheme(event) {
@@ -69,15 +73,21 @@ export default {
       } else {
         this.$primevue.changeTheme('aura-dark-indigo', 'aura-light-indigo', 'theme-link', () => {})
       }
+    },
+    toggle(event) {
+      this.$refs.menu.toggle(event)
+    },
+    logout() {
+      this.$router.push('/login')
     }
   }
 }
 </script>
 
 <template>
-  <Menubar :model="items" class="mb-4 py-5">
+  <Menubar :model="categories" class="mb-4 py-3 px-4">
     <template #start>
-      <Avatar :image="logo" shape="circle" />
+      <Image src="src/assets/images/b2blogo.png" width="70" height="70" @click="routePath('/')" />
     </template>
     <template #item="{ item, props, hasSubmenu, root }">
       <a
@@ -104,7 +114,7 @@ export default {
       </a>
     </template>
     <template #end>
-      <div class="flex align-items-center gap-3">
+      <div class="flex align-items-center gap-4">
         <InputText placeholder="Search" type="text" class="w-8rem sm:w-auto" />
         <Button
           v-if="!darkTheme"
@@ -121,7 +131,15 @@ export default {
           rounded
           @click="changeTheme(false)"
         />
-        <Avatar icon="pi pi-user" size="large" shape="circle" />
+        <Avatar
+          icon="pi pi-user"
+          size="large"
+          shape="circle"
+          aria-haspopup="true"
+          aria-controls="overlay_tmenu"
+          @click="toggle"
+        />
+        <Menu ref="menu" id="overlay_tmenu" :model="items" popup />
       </div>
     </template>
   </Menubar>
