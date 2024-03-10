@@ -5,7 +5,212 @@ export default {
   data() {
     return {
       products: null,
-      layout: 'grid'
+      layout: 'grid',
+      items: [
+        {
+          label: 'Price Range',
+          items: [
+            {
+              label: '$50 - $100',
+              icon: 'pi pi-dollar',
+              route: '/products'
+            },
+            {
+              label: '$100 - $150',
+              icon: 'pi pi-dollar',
+              route: '/products'
+            },
+            {
+              label: '$150 - $200',
+              icon: 'pi pi-dollar',
+              route: '/products'
+            },
+            {
+              label: '$200 - $250',
+              icon: 'pi pi-dollar',
+              route: '/products'
+            }
+          ]
+        },
+        {
+          label: 'Eveolution Rate',
+          items: [
+            {
+              label: '5 Star',
+              icon: 'pi pi-star',
+              route: '/products'
+            },
+            {
+              label: '4 Star',
+              icon: 'pi pi-star',
+              route: '/products'
+            },
+            {
+              label: '3 Star',
+              icon: 'pi pi-star',
+              route: '/products'
+            },
+            {
+              label: '2 Star',
+              icon: 'pi pi-star',
+              route: '/products'
+            }
+          ]
+        }
+      ],
+      categories: [
+        {
+          label: 'Categories',
+          items: [
+            {
+              label: 'Electronics',
+              icon: 'pi pi-desktop',
+              route: '/products'
+            },
+            {
+              label: 'Furniture',
+              icon: 'pi pi-book',
+              route: '/products'
+            },
+            {
+              label: 'Clothing',
+              icon: 'pi pi-shopping-cart',
+              route: '/products'
+            },
+            {
+              label: 'Sports',
+              icon: 'pi pi-briefcase',
+              route: '/products'
+            },
+            {
+              label: 'Health',
+              icon: 'pi pi-heart',
+              route: '/products'
+            }
+          ]
+        }
+      ],
+      brands: [
+        {
+          label: 'Nike',
+          value: 'Nike',
+          icon: 'pi pi-check',
+          route: '/products',
+          selected: false
+        },
+        {
+          label: 'Adidas',
+          value: 'Adidas',
+          icon: 'pi pi-check',
+          route: '/products',
+          selected: false
+        },
+        {
+          label: 'Puma',
+          value: 'Puma',
+          icon: 'pi pi-check',
+          route: '/products',
+          selected: false
+        },
+        {
+          label: 'Under Armour',
+          value: 'Under Armour',
+          icon: 'pi pi-check',
+          route: '/products',
+          selected: false
+        },
+        {
+          label: 'Reebok',
+          value: 'Reebok',
+          icon: 'pi pi-check',
+          route: '/products',
+          selected: false
+        },
+        {
+          label: 'Asics',
+          value: 'Asics',
+          icon: 'pi pi-check',
+          route: '/products',
+          selected: false
+        },
+        {
+          label: 'Vans',
+          value: 'Vans',
+          icon: 'pi pi-check',
+          route: '/products',
+          selected: false
+        },
+        {
+          label: 'Converse',
+          value: 'Converse',
+          icon: 'pi pi-check',
+          route: '/products',
+          selected: false
+        }
+      ],
+      selectedBrands: [],
+      priceRange: [
+        {
+          label: '$50 - $100',
+          value: '$50 - $100',
+          icon: 'pi pi-check',
+          route: '/products',
+          selected: false
+        },
+        {
+          label: '$100 - $150',
+          value: '$100 - $150',
+          icon: 'pi pi-check',
+          route: '/products',
+          selected: false
+        },
+        {
+          label: '$150 - $200',
+          value: '$150 - $200',
+          icon: 'pi pi-check',
+          route: '/products',
+          selected: false
+        },
+        {
+          label: '$200 - $250',
+          value: '$200 - $250',
+          icon: 'pi pi-check',
+          route: '/products',
+          selected: false
+        }
+      ],
+      selectedPriceRange: [],
+      evoulotionRate: [
+        {
+          label: '5 Star',
+          value: '5 Star',
+          icon: 'pi pi-star',
+          route: '/products',
+          selected: false
+        },
+        {
+          label: '4 Star',
+          value: '4 Star',
+          icon: 'pi pi-star',
+          route: '/products',
+          selected: false
+        },
+        {
+          label: '3 Star',
+          value: '3 Star',
+          icon: 'pi pi-star',
+          route: '/products',
+          selected: false
+        },
+        {
+          label: '2 Star',
+          value: '2 Star',
+          icon: 'pi pi-star',
+          route: '/products',
+          selected: false
+        }
+      ],
+      selectedEvoulotionRate: []
     }
   },
   mounted() {
@@ -34,7 +239,81 @@ export default {
 <template>
   <div class="formgrid grid">
     <div class="field col-2">
-      <div class="card h-screen"></div>
+      <div class="card h-full p-3">
+        <PanelMenu expanded :model="categories" multiple />
+        <Divider />
+        <Listbox
+          v-model="selectedBrands"
+          :options="brands"
+          :modelValue="selectedBrands"
+          filter
+          multiple
+          optionLabel="label"
+          class="w-full md:w-14rem"
+        >
+          <template #option="{ option }">
+            <div class="flex">
+              <Checkbox
+                v-model="option.selected"
+                :key="option.value"
+                :input-id="option.value"
+                :name="option.value"
+                :value="option.value"
+                class="mr-3"
+              />
+              <label :for="option.value" class="cursor-pointer">{{ option.label }}</label>
+            </div>
+          </template>
+        </Listbox>
+        <Divider />
+        <Listbox
+          v-model="selectedPriceRange"
+          :options="priceRange"
+          :modelValue="selectedPriceRange"
+          filter
+          optionLabel="label"
+          class="w-full md:w-14rem"
+        >
+          <template #option="{ option }">
+            <div class="flex">
+              <RadioButton
+                v-model="option.selected"
+                :key="option.value"
+                :input-id="option.value"
+                :name="option.value"
+                :value="option.value"
+                class="mr-3"
+              />
+              <label :for="option.value" class="cursor-pointer">{{ option.label }}</label>
+            </div>
+          </template>
+        </Listbox>
+        <Divider />
+        <Listbox
+          v-model="selectedEvoulotionRate"
+          :options="evoulotionRate"
+          :modelValue="selectedEvoulotionRate"
+          filter
+          optionLabel="label"
+          class="w-full md:w-14rem"
+        >
+          <template #option="{ option }">
+            <div class="flex">
+              <RadioButton
+                v-model="option.selected"
+                :key="option.value"
+                :input-id="option.value"
+                :name="option.value"
+                :value="option.value"
+                class="mr-3"
+              />
+              <icon :class="option.icon" class="mr-3"></icon>
+              <label :for="option.value" class="cursor-pointer">{{ option.label }}</label>
+            </div>
+          </template>
+        </Listbox>
+        <Divider />
+      </div>
     </div>
     <div class="field col">
       <div class="card">
