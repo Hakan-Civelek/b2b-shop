@@ -1,4 +1,5 @@
 <script>
+import ToastMixin from '@/mixins/toast.js'
 export default {
   data() {
     return {
@@ -6,14 +7,13 @@ export default {
       password: null
     }
   },
+  mixins: [ToastMixin],
   methods: {
     login() {
-      console.log('email: ' + this.email)
-      console.log('Password: ' + this.password)
       if (this.email === 'admin' && this.password === 'admin') {
-        this.$router.push('/dashboard')
-      } else {
         this.$router.push('/')
+      } else {
+        this.showErrorMessage('Invalid credentials');
       }
     }
   }
