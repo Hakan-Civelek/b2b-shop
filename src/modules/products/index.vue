@@ -249,7 +249,7 @@ export default {
           filter
           multiple
           optionLabel="label"
-          class="w-full md:w-14rem"
+          class="w-full"
         >
           <template #option="{ option }">
             <div class="flex">
@@ -272,7 +272,7 @@ export default {
           :modelValue="selectedPriceRange"
           filter
           optionLabel="label"
-          class="w-full md:w-14rem"
+          class="w-full"
         >
           <template #option="{ option }">
             <div class="flex">
@@ -295,7 +295,7 @@ export default {
           :modelValue="selectedEvoulotionRate"
           filter
           optionLabel="label"
-          class="w-full md:w-14rem"
+          class="w-full"
         >
           <template #option="{ option }">
             <div class="flex">
