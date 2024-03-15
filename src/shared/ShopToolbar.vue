@@ -6,7 +6,10 @@ export default {
         {
           label: 'Profile',
           icon: 'pi pi-home',
-          route: '/'
+          route: '/profile',
+          command: () => {
+            this.routePath('/profile')
+          }
         },
         {
           label: 'Products',
@@ -87,7 +90,7 @@ export default {
 <template>
   <Menubar :model="categories" class="mb-4 py-3 px-4">
     <template #start>
-      <Image src="src/assets/images/b2blogo.png" width="70" height="70" @click="routePath('/')" />
+      <Image src="src/assets/images/b2blogo.png" width="70" height="70" class="cursor-pointer" @click="routePath('/')" />
     </template>
     <template #item="{ item, props, hasSubmenu, root }">
       <a
@@ -128,13 +131,23 @@ export default {
           v-if="darkTheme"
           icon="pi pi-sun"
           severity="warning"
+          size="large"
           rounded
           @click="changeTheme(false)"
+        />
+        <Avatar
+          icon="pi pi-shopping-cart"
+          shape="circle"
+          size="large"
+          class="cursor-pointer"
+          rounded
+          @click="routePath('/cart')"
         />
         <Avatar
           icon="pi pi-user"
           size="large"
           shape="circle"
+          class="cursor-pointer"
           aria-haspopup="true"
           aria-controls="overlay_tmenu"
           @click="toggle"
