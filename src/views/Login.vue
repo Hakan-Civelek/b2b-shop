@@ -1,22 +1,28 @@
 <script>
+import { mapActions } from 'vuex'
 import ToastMixin from '@/mixins/toast.js'
 export default {
   data() {
     return {
-      email: null,
-      password: null
+      formData: {
+        username: null,
+        password: null
+      }
     }
   },
   mixins: [ToastMixin],
   methods: {
-    login() {
-      if (this.email === 'admin' && this.password === 'admin') {
-        this.$router.push('/')
-      } else {
-        this.showErrorMessage('Invalid credentials');
+    ...mapActions('app', ['login']),
+    doLogin() {
+      this.login(this.formData)
+        .then(() => {
+          this.$router.push('/')
+        })
+        .catch(() => {
+          this.showErrorMessage('Invalid credentials')
+        })
       }
     }
-  }
 }
 </script>
 
@@ -36,11 +42,11 @@ export default {
       </div>
 
       <div>
-        <label for="email1" class="block text-900 font-medium mb-2">Email</label>
-        <InputText v-model="email" id="email1" type="text" placeholder="Email address" class="w-full mb-3" />
+        <label for="username" class="block text-900 font-medium mb-2">Username</label>
+        <InputText v-model="formData.username" id="username" type="text" placeholder="Username" class="w-full mb-3" />
 
         <label for="password1" class="block text-900 font-medium mb-2">Password</label>
-        <InputText v-model="password" id="password1" type="password" placeholder="Password" class="w-full mb-3" @keypress.enter="login" />
+        <InputText v-model="formData.password" id="password1" type="password" placeholder="Password" class="w-full mb-3" @keypress.enter="login" />
 
         <div class="flex align-items-center justify-content-between mb-6">
           <div class="flex align-items-center">
@@ -56,7 +62,7 @@ export default {
         label="Sign In"
         icon="pi pi-user"
         class="w-full"
-        @click="login"
+        @click="doLogin"
         ></Button>
       </div>
     </div>
