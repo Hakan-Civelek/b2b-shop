@@ -8,7 +8,7 @@ import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import Toast from 'primevue/toast';
 
-import App from './modules/app/App.vue'
+import App from './modules/app/index.vue'
 import router from './router'
 import store from './store';
 
