@@ -22,9 +22,9 @@ module.exports = {
     "no-multiple-empty-lines": ["warn", { "max": 1, "maxEOF": 1 }],
     'vue/max-attributes-per-line': 0,
     'vue/max-len': ['warn', {
-      code: 128,
+      code: 150,
       tabWidth: 2,
-      template: 128,
+      template: 150,
       ignoreComments: true,
       ignoreUrls: true,
       ignoreStrings: true,
