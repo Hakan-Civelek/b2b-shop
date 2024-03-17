@@ -12,6 +12,7 @@ import axios from 'haxios';
 import App from './modules/app/index.vue';
 import router from './router';
 import store from './store';
+import './utils/tokenInterceptor.js';
 
 axios.defaults.baseURL = import.meta.env.VITE_API_ENDPOINT;
 
