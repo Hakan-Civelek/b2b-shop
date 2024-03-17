@@ -26,4 +26,7 @@ export default defineConfig({
     }
   },
   optimizeDeps: { exclude: ["fsevents"] },
+  define: {
+    'process.env': {},
+  },
 })

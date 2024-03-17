@@ -1,11 +1,9 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import { createStore } from 'vuex';
 
-Vue.use(Vuex);
-
-export const storeOptions = {
-    modules: {},
-    plugins: [],
-};
-
-export default new Vuex.Store(storeOptions);
+export default createStore({
+  state: {},
+  getters: {},
+  mutations: {},
+  actions: {},
+  modules: {},
+});
