@@ -18,6 +18,7 @@ module.exports = {
       { blankLine: 'always', prev: '*', next: 'return' },
     ],
     'no-param-reassign': 0,
+    "no-trailing-spaces": "warn",
     "no-multiple-empty-lines": ["warn", { "max": 1, "maxEOF": 1 }],
     'vue/max-attributes-per-line': 0,
     'vue/max-len': ['warn', {
