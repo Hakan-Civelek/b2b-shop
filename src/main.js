@@ -1,16 +1,19 @@
+import '@/assets/flags.css';
+import '@/assets/styles.css';
 import "primeflex/primeflex.css";
 import "primeicons/primeicons.css";
-import '@/assets/styles.css'
-import '@/assets/flags.css'
 
-import { createApp } from 'vue'
 import PrimeVue from 'primevue/config';
-import ToastService from 'primevue/toastservice';
 import Toast from 'primevue/toast';
+import ToastService from 'primevue/toastservice';
+import { createApp } from 'vue';
 
-import App from './modules/app/index.vue'
-import router from './router'
+import axios from 'haxios';
+import App from './modules/app/index.vue';
+import router from './router';
 import store from './store';
+
+axios.defaults.baseURL = import.meta.env.VITE_API_ENDPOINT;
 
 const app = createApp(App)
 
