@@ -21,8 +21,8 @@ export default {
         .catch(() => {
           this.showErrorMessage('Invalid credentials')
         })
-      }
     }
+  }
 }
 </script>
 
@@ -43,10 +43,23 @@ export default {
 
       <div>
         <label for="username" class="block text-900 font-medium mb-2">Username</label>
-        <InputText v-model="formData.username" id="username" type="text" placeholder="Username" class="w-full mb-3" />
+        <InputText
+          v-model="formData.username"
+          id="username"
+          type="text"
+          placeholder="Username"
+          class="w-full mb-3"
+        />
 
         <label for="password1" class="block text-900 font-medium mb-2">Password</label>
-        <InputText v-model="formData.password" id="password1" type="password" placeholder="Password" class="w-full mb-3" @keypress.enter="login" />
+        <InputText
+          v-model="formData.password"
+          id="password1"
+          type="password"
+          placeholder="Password"
+          class="w-full mb-3"
+          @keypress.enter="login"
+        />
 
         <div class="flex align-items-center justify-content-between mb-6">
           <div class="flex align-items-center">
@@ -58,12 +71,7 @@ export default {
           >
         </div>
 
-        <Button
-        label="Sign In"
-        icon="pi pi-user"
-        class="w-full"
-        @click="doLogin"
-        ></Button>
+        <Button label="Sign In" icon="pi pi-user" class="w-full" @click="doLogin"></Button>
       </div>
     </div>
   </div>
@@ -71,9 +79,9 @@ export default {
 
 <style>
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
 }
 </style>

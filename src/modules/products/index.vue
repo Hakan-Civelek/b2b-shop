@@ -373,7 +373,8 @@ export default {
                           class="surface-0 flex align-items-center gap-2 justify-content-center py-1 px-2"
                           style="
                             border-radius: 30px;
-                            box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04),
+                            box-shadow:
+                              0px 1px 2px 0px rgba(0, 0, 0, 0.04),
                               0px 1px 2px 0px rgba(0, 0, 0, 0.06);
                           "
                         >
@@ -435,7 +436,8 @@ export default {
                           class="surface-0 flex align-items-center gap-2 justify-content-center py-1 px-2"
                           style="
                             border-radius: 30px;
-                            box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04),
+                            box-shadow:
+                              0px 1px 2px 0px rgba(0, 0, 0, 0.04),
                               0px 1px 2px 0px rgba(0, 0, 0, 0.06);
                           "
                         >
@@ -467,5 +469,4 @@ export default {
   </div>
 </template>
 
-<style>
-</style>
+<style></style>

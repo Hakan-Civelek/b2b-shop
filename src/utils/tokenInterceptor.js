@@ -1,15 +1,15 @@
-import axios from 'haxios';
+import axios from 'haxios'
 
 export const addTokenToRequest = (acc) => {
-  const sessionId = window.localStorage.getItem('session_id');
+  const sessionId = window.localStorage.getItem('session_id')
 
   if (sessionId !== null) {
-    acc.headers.Authorization = `Bearer ${sessionId}`;
+    acc.headers.Authorization = `Bearer ${sessionId}`
   }
 
-  return acc;
-};
+  return acc
+}
 
-(() => {
-  axios.interceptors.request.use(addTokenToRequest, (err) => Promise.reject(err));
-})();
+;(() => {
+  axios.interceptors.request.use(addTokenToRequest, (err) => Promise.reject(err))
+})()

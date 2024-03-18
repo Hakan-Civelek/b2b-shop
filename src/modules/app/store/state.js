@@ -1,3 +1,3 @@
 export default {
-  loggedUser: null,
+  loggedUser: null
 }

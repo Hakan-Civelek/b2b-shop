@@ -90,7 +90,13 @@ export default {
 <template>
   <Menubar :model="categories" class="mb-4 py-3 px-4">
     <template #start>
-      <Image src="src/assets/images/b2blogo.png" width="70" height="70" class="cursor-pointer" @click="routePath('/')" />
+      <Image
+        src="src/assets/images/b2blogo.png"
+        width="70"
+        height="70"
+        class="cursor-pointer"
+        @click="routePath('/')"
+      />
     </template>
     <template #item="{ item, props, hasSubmenu, root }">
       <a
@@ -158,5 +164,4 @@ export default {
   </Menubar>
 </template>
 
-<style>
-</style>
+<style></style>

@@ -1,5 +1,5 @@
-import { createStore } from 'vuex';
-import app from '../modules/app/store/index.js';
+import { createStore } from 'vuex'
+import app from '../modules/app/store/index.js'
 
 export default createStore({
   state: {},
@@ -7,6 +7,6 @@ export default createStore({
   mutations: {},
   actions: {},
   modules: {
-    app,
-  },
-});
+    app
+  }
+})
