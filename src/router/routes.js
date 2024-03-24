@@ -29,5 +29,34 @@ export default [
     path: '/profile',
     name: 'profile',
     component: () => import('../modules/profile/index.vue')
+  },
+  {
+    path: '/admin',
+    name: 'AdminPanel',
+    component: () => import('../modules/adminPanel/index.vue'),
+    // beforeEnter: (to, from, next) => {
+    //   if (this.$store.getters['auth/isAdmin']) {
+    //     next()
+    //   } else {
+    //     next('/login')
+    //   }
+    // },
+    children: [
+      {
+        path: 'products',
+        name: 'AdminProducts',
+        component: () => import('../modules/adminPanel/components/products.vue')
+      },
+      {
+        path: 'orders',
+        name: 'AdminOrders',
+        component: () => import('../modules/adminPanel/components/orders.vue')
+      },
+      {
+        path: 'users',
+        name: 'AdminUsers',
+        component: () => import('../modules/adminPanel/components/users.vue')
+      }
+    ]
   }
 ]
