@@ -1,3 +1,5 @@
+import store from '../store'; // Vuex store'u dahil edin
+
 export default [
   {
     path: '/login',
@@ -34,13 +36,13 @@ export default [
     path: '/admin',
     name: 'AdminPanel',
     component: () => import('../modules/adminPanel/index.vue'),
-    // beforeEnter: (to, from, next) => {
-    //   if (this.$store.getters['auth/isAdmin']) {
-    //     next()
-    //   } else {
-    //     next('/login')
-    //   }
-    // },
+    beforeEnter: (to, from, next) => {
+      if (store.getters['app/isAdmin']) {
+        next()
+      } else {
+        next('/login')
+      }
+    },
     children: [
       {
         path: 'products',
@@ -57,6 +59,7 @@ export default [
         name: 'AdminUsers',
         component: () => import('../modules/adminPanel/components/users.vue')
       }
-    ]
+    ],
+    meta: { isAdmin: true }
   }
 ]

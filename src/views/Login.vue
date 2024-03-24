@@ -1,5 +1,5 @@
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import ToastMixin from '@/mixins/toast.js'
 export default {
   data() {
@@ -11,12 +11,17 @@ export default {
     }
   },
   mixins: [ToastMixin],
+  computed: {
+    ...mapGetters('app', ['isAdmin'])
+  },
   methods: {
     ...mapActions('app', ['login']),
     doLogin() {
       this.login(this.credentials)
         .then(() => {
-          this.$router.push('/')
+          console.log(this.isAdmin)
+          if (this.isAdmin) this.$router.push('/admin')
+          else this.$router.push('/')
         })
         .catch(() => {
           this.showErrorMessage('Invalid credentials')
