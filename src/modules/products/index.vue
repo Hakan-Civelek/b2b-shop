@@ -239,7 +239,7 @@ export default {
 <template>
   <div class="formgrid grid">
     <div class="field col-2">
-      <div class="card h-full p-3">
+      <div class="card p-3 sticky top-0">
         <PanelMenu expanded :model="categories" multiple />
         <Divider />
         <Listbox
@@ -322,8 +322,7 @@ export default {
           :layout="layout"
           :sortOrder="sortOrder"
           :sortField="sortField"
-          paginator
-          :rows="8"
+          :rows="4"
         >
           <template #header>
             <div class="flex justify-content-between">
