@@ -5,6 +5,7 @@ export default {
         severity: 'success',
         summary: 'Success',
         detail: message,
+        group: 'br',
         life: 3000
       })
     },
@@ -22,6 +23,7 @@ export default {
         severity: 'info',
         summary: 'Info',
         detail: message,
+        group: 'br',
         life: 3000
       })
     },
@@ -30,6 +32,7 @@ export default {
         severity: 'warn',
         summary: 'Warning',
         detail: message,
+        group: 'br',
         life: 3000
       })
     }
