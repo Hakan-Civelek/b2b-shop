@@ -1,5 +1,6 @@
 <script>
 import { ProductService } from '@/service/ProductService'
+import ToastMixin from '@/mixins/toast.js'
 
 export default {
   data() {
@@ -213,6 +214,7 @@ export default {
       selectedEvoulotionRate: []
     }
   },
+  mixins: [ToastMixin],
   mounted() {
     ProductService.getProducts().then((data) => (this.products = data.slice(0, 12)))
   },
@@ -231,7 +233,16 @@ export default {
         default:
           return null
       }
-    }
+    },
+    goProductDetail(product) {
+      this.$router.push(`/products/${product.id}`)
+    },
+    addBasket(product) {
+      this.addBasket(product)
+        .then(() => {
+          this.showSuccessMessage('Product added to basket');
+        })
+    },
   }
 }
 </script>
@@ -346,9 +357,10 @@ export default {
                 >
                   <div class="md:w-10rem relative">
                     <img
-                      class="block xl:block mx-auto border-round w-full"
+                      class="block xl:block mx-auto border-round w-full cursor-pointer"
                       :src="`https://primefaces.org/cdn/primevue/images/product/${item.image}`"
                       :alt="item.name"
+                      @click="goProductDetail(item)"
                     />
                     <Tag
                       :value="item.inventoryStatus"
@@ -365,7 +377,7 @@ export default {
                     >
                       <div>
                         <span class="font-medium text-secondary text-sm">{{ item.category }}</span>
-                        <div class="text-lg font-medium text-900 mt-2">{{ item.name }}</div>
+                        <div class="text-lg font-medium text-900 mt-2 cursor-pointer" @click="goProductDetail(item)">{{ item.name }}</div>
                       </div>
                       <div class="surface-100 p-1" style="border-radius: 30px">
                         <div
@@ -391,6 +403,7 @@ export default {
                           label="Buy Now"
                           :disabled="item.inventoryStatus === 'OUTOFSTOCK'"
                           class="flex-auto md:flex-initial white-space-nowrap"
+                          @click="addBasket(item)"
                         ></Button>
                       </div>
                     </div>
@@ -408,8 +421,8 @@ export default {
                 class="col-12 sm:col-6 md:col-6 lg:col-4 xl:col-3 p-2"
               >
                 <div class="p-4 border-1 surface-border surface-card border-round flex flex-column">
-                  <div class="surface-50 flex justify-content-center border-round p-3">
-                    <div class="relative mx-auto">
+                  <div class="surface-50 flex justify-content-center border-round p-3 hover:shadow-2" @click="goProductDetail(item)">
+                    <div class="relative mx-auto cursor-pointer">
                       <img
                         class="border-round w-full"
                         :src="`https://primefaces.org/cdn/primevue/images/product/${item.image}`"
@@ -428,7 +441,7 @@ export default {
                     <div class="flex flex-row justify-content-between align-items-start gap-2">
                       <div>
                         <span class="font-medium text-secondary text-sm">{{ item.category }}</span>
-                        <div class="text-lg font-medium text-900 mt-1">{{ item.name }}</div>
+                        <div class="text-lg font-medium text-900 mt-1 cursor-pointer hover:shadow-2" @click="goProductDetail(item)">{{ item.name }}</div>
                       </div>
                       <div class="surface-100 p-1" style="border-radius: 30px">
                         <div
@@ -453,6 +466,7 @@ export default {
                           label="Buy Now"
                           :disabled="item.inventoryStatus === 'OUTOFSTOCK'"
                           class="flex-auto white-space-nowrap"
+                          @click="addBasket(item)"
                         ></Button>
                         <Button icon="pi pi-heart" outlined></Button>
                       </div>
