@@ -361,8 +361,9 @@ export default {
                   <div class="md:w-10rem relative">
                     <img
                       class="block xl:block mx-auto border-round w-full cursor-pointer"
-                      :src="`https://primefaces.org/cdn/primevue/images/product/${item.image}`"
-                      :alt="item.name"
+                      :src="item.thumbnail"
+                      :alt="item.title"
+                      style="height: 140px; object-fit: contain; cursor: pointer"
                       @click="goProductDetail(item)"
                     />
                     <Tag
@@ -380,13 +381,13 @@ export default {
                     >
                       <div>
                         <span class="font-medium text-secondary text-sm">{{
-                          item.category.charAt(0).toUpperCase() + item.category.slice(1)
+                          item.brand
                         }}</span>
                         <div
                           class="text-lg font-medium text-900 mt-2 cursor-pointer"
                           @click="goProductDetail(item)"
                         >
-                          {{ item.name }}
+                          {{ item.title }}
                         </div>
                       </div>
                       <div class="surface-100 p-1" style="border-radius: 30px">
@@ -439,7 +440,7 @@ export default {
                     <div class="relative mx-auto cursor-pointer">
                       <img
                         class="border-round w-full"
-                        :src="item.images[0]"
+                        :src="item.thumbnail"
                         :alt="item.title"
                         style="width: 300px; height: 200px; object-fit: contain; cursor: pointer"
                       />
@@ -452,15 +453,8 @@ export default {
                     </div>
                   </div>
                   <div class="pt-4">
-                    <div class="flex flex-row justify-content-between align-items-start gap-2">
-                      <div>
-                        <span class="font-medium text-secondary text-sm">{{
-                          item.category.charAt(0).toUpperCase() + item.category.slice(1)
-                        }}</span>
-                      </div>
-                    </div>
                     <div
-                      class="flex flex-row justify-content-start align-items-start gap-2 h-2rem"
+                      class="flex flex-row justify-content-start align-items-start gap-2 h-4rem"
                     >
                       <div>
                         <div
