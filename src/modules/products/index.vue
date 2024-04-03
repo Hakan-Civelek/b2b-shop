@@ -219,7 +219,7 @@ export default {
     this.fetchProducts()
   },
   computed: {
-    ...mapState('products', ['products'])
+    ...mapState('products', ['products', 'loading'])
   },
   methods: {
     ...mapActions('products', ['fetchProducts']),
@@ -352,7 +352,7 @@ export default {
           </template>
 
           <template #list="slotProps">
-            <div class="grid grid-nogutter">
+            <div v-if="!loading" class="grid grid-nogutter">
               <div v-for="(item, index) in slotProps.items" :key="index" class="col-12">
                 <div
                   class="flex flex-column sm:flex-row sm:align-items-center p-4 gap-3"
@@ -380,9 +380,7 @@ export default {
                       class="flex flex-row md:flex-column justify-content-between align-items-start gap-2"
                     >
                       <div>
-                        <span class="font-medium text-secondary text-sm">{{
-                          item.brand
-                        }}</span>
+                        <span class="font-medium text-secondary text-sm">{{ item.brand }}</span>
                         <div
                           class="text-lg font-medium text-900 mt-2 cursor-pointer"
                           @click="goProductDetail(item)"
@@ -421,10 +419,40 @@ export default {
                 </div>
               </div>
             </div>
+            <div v-else class="grid grid-nogutter">
+              <div v-for="i in 16" :key="i" class="col-12">
+                <div
+                  class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
+                  :class="{ 'border-top-1 surface-border': i !== 0 }"
+                >
+                  <Skeleton
+                    class="w-9 sm:w-16rem xl:w-10rem h-6rem block xl:block mx-auto border-round"
+                  />
+                  <div
+                    class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4"
+                  >
+                    <div class="flex flex-column align-items-center sm:align-items-start gap-3">
+                      <Skeleton class="w-8rem border-round h-2rem" />
+                      <Skeleton class="w-6rem border-round h-1rem" />
+                      <div class="flex align-items-center gap-3">
+                        <Skeleton class="w-6rem border-round h-1rem" />
+                        <Skeleton class="w-3rem border-round h-1rem" />
+                      </div>
+                    </div>
+                    <div
+                      class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2"
+                    >
+                      <Skeleton class="w-4rem border-round h-2rem" />
+                      <Skeleton shape="circle" class="w-3rem h-3rem" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </template>
 
           <template #grid="slotProps">
-            <div class="grid grid-nogutter">
+            <div v-if="!loading" class="grid grid-nogutter">
               <div
                 v-for="(item, index) in slotProps.items"
                 :key="index"
@@ -453,9 +481,7 @@ export default {
                     </div>
                   </div>
                   <div class="pt-4">
-                    <div
-                      class="flex flex-row justify-content-start align-items-start gap-2 h-4rem"
-                    >
+                    <div class="flex flex-row justify-content-start align-items-start gap-2 h-4rem">
                       <div>
                         <div
                           class="text-lg font-bold text-900 mt-1 cursor-pointer"
@@ -484,6 +510,25 @@ export default {
                         <Button icon="pi pi-heart" outlined></Button>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-else class="grid grid-nogutter">
+              <div v-for="i in 16" :key="i" class="col-12 sm:col-6 md:col-6 lg:col-4 xl:col-3 p-2">
+                <div class="p-4 border-1 surface-border surface-card border-round">
+                  <div class="flex flex-wrap align-items-center justify-content-between gap-2">
+                    <Skeleton class="w-6rem border-round h-2rem" />
+                    <Skeleton class="w-3rem border-round h-1rem" />
+                  </div>
+                  <div class="flex flex-column align-items-center gap-3 py-5">
+                    <Skeleton class="w-9 border-round h-10rem" />
+                    <Skeleton class="w-8rem border-round h-2rem" />
+                    <Skeleton class="w-6rem border-round h-1rem" />
+                  </div>
+                  <div class="flex align-items-center justify-content-between">
+                    <Skeleton class="w-4rem border-round h-2rem" />
+                    <Skeleton shape="circle" class="w-3rem h-3rem" />
                   </div>
                 </div>
               </div>
