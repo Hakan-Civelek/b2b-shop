@@ -1,4 +1,7 @@
 <script>
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
+
 export default {
   data() {
     return {
@@ -65,6 +68,10 @@ export default {
       darkTheme: false
     }
   },
+  components: {
+    IconField,
+    InputIcon
+  },
   methods: {
     routePath(event) {
       this.$router.push(event)
@@ -124,7 +131,10 @@ export default {
     </template>
     <template #end>
       <div class="flex align-items-center gap-4">
-        <InputText placeholder="Search" type="text" class="w-8rem sm:w-auto" />
+        <IconField iconPosition="left">
+          <InputIcon class="pi pi-search"> </InputIcon>
+          <InputText class="h-3rem" placeholder="Search" />
+        </IconField>
         <Button
           v-if="!darkTheme"
           icon="pi pi-moon"
