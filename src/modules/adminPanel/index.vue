@@ -154,7 +154,7 @@ export default {
       </Menu>
     </div>
     <div class="col ml-3">
-      <div class="card">
+      <div class="card p-menu">
         <div class="px-4 py-5 md:px-6">
           <div class="grid">
             <div class="col-12 md:col-6 lg:col-3">
