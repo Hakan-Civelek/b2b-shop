@@ -60,6 +60,6 @@ export default [
         component: () => import('../modules/adminPanel/components/users.vue')
       }
     ],
-    meta: { isAdmin: true }
+    meta: { isAdmin: true, layout: 'admin', noLayout: true }
   }
 ]
