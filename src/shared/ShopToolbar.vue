@@ -1,4 +1,5 @@
 <script>
+import { mapGetters } from 'vuex'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
 
@@ -28,6 +29,16 @@ export default {
           label: 'Settings',
           icon: 'pi pi-cog',
           route: '/settings'
+        },
+        {
+          label: 'Admin',
+          icon: 'pi pi-user-plus',
+          route: '/admin',
+          command: () => {
+            if (this.isAdmin) this.routePath('/admin')
+            else this.routePath('/')
+          },
+          visible: this.isAdmin
         },
         {
           label: 'Logout',
@@ -71,6 +82,9 @@ export default {
   components: {
     IconField,
     InputIcon
+  },
+  computed: {
+    ...mapGetters('app', ['isAdmin'])
   },
   methods: {
     routePath(event) {
