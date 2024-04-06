@@ -5,8 +5,8 @@ export default {
   data() {
     return {
       credentials: {
-        username: null,
-        password: null
+        username: 'kminchelle',
+        password: '0lelplR'
       }
     }
   },
@@ -21,7 +21,7 @@ export default {
         .then(() => {
           console.log(this.isAdmin)
           if (this.isAdmin) this.$router.push('/admin')
-          else this.$router.push('/')
+          else this.$router.push('/products')
         })
         .catch(() => {
           this.showErrorMessage('Invalid credentials')
