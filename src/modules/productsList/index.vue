@@ -252,8 +252,8 @@ export default {
 
 <template>
   <div class="formgrid grid">
-    <div class="field col-2">
-      <div class="card p-3 sticky top-0">
+    <div class="col-2">
+      <div class="card mb-0 p-3 sticky top-0">
         <PanelMenu expanded :model="categories" multiple />
         <Divider />
         <Listbox
@@ -329,8 +329,8 @@ export default {
         <Divider />
       </div>
     </div>
-    <div class="field col">
-      <div class="card">
+    <div class="col">
+      <div class="card mb-0">
         <DataView
           :value="products"
           :layout="layout"
