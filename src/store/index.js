@@ -1,7 +1,8 @@
-import { createStore } from 'vuex'
-import app from '../modules/app/store/index.js'
-import productDetails from '../modules/productDetails/store/index.js'
-import products from '../modules/products/store/index.js'
+import { createStore } from 'vuex';
+import app from '../modules/app/store/index.js';
+import productDetails from '../modules/productDetails/store/index.js';
+import products from '../modules/productsList/store/index.js';
+import managementTable from '../shared/managementTable/store/index.js';
 
 export default createStore({
   state: {},
@@ -12,5 +13,6 @@ export default createStore({
     app,
     products,
     productDetails,
+    managementTable
   }
 })
