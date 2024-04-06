@@ -9,7 +9,7 @@ export default [
   },
   {
     path: '/',
-    name: 'dashboard',
+    name: 'mainView',
     component: import('../modules/mainView/index.vue')
   },
   {
