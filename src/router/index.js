@@ -5,4 +5,19 @@ const router = createRouter({
   routes
 })
 
+const handleBeforeEach = (to, from, next) => {
+  if (to.meta.noLayout) {
+    next()
+  } else {
+    const sessionId = localStorage.getItem('session_id')
+    if (sessionId) {
+      next()
+    } else {
+      next({ path: '/login' })
+    }
+  }
+}
+
+router.beforeEach(handleBeforeEach);
+
 export default router
