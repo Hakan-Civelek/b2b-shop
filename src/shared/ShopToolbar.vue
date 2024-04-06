@@ -35,7 +35,7 @@ export default {
           icon: 'pi pi-user-plus',
           route: '/admin',
           command: () => {
-            if (this.isAdmin) this.routePath('/admin')
+            if (this.isAdmin) this.routePath('/admin/dashboard')
             else this.routePath('/')
           },
           visible: this.isAdmin

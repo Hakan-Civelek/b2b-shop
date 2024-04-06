@@ -20,7 +20,7 @@ export default {
       this.login(this.credentials)
         .then(() => {
           console.log(this.isAdmin)
-          if (this.isAdmin) this.$router.push('/admin')
+          if (this.isAdmin) this.$router.push('/admin/dashboard')
           else this.$router.push('/products')
         })
         .catch(() => {
