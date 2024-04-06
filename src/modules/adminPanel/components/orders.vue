@@ -1,12 +1,18 @@
 <script>
-export default {}
+import ManagementTable from '@/shared/managementTable/index.vue'
+
+export default {
+  components: {
+    ManagementTable
+  },
+}
 </script>
 
 <template>
   <div>
-    <h1>Products</h1>
+    <ManagementTable
+      domain="/orders"
+      title="Orders"
+    />
   </div>
 </template>
-
-<style>
-</style>

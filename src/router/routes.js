@@ -15,7 +15,7 @@ export default [
   {
     path: '/products',
     name: 'products',
-    component: () => import('../modules/products/index.vue')
+    component: () => import('../modules/productsList/index.vue')
   },
   {
     path: '/products/:id',
@@ -45,19 +45,24 @@ export default [
     },
     children: [
       {
-        path: 'products',
+        path: '/admin/dashboard',
+        name: 'AdminDashboard',
+        component: () => import('../modules/adminPanel/components/dashboard.vue')
+      },
+      {
+        path: '/admin/products',
         name: 'AdminProducts',
         component: () => import('../modules/adminPanel/components/products.vue')
       },
       {
-        path: 'orders',
+        path: '/admin/orders',
         name: 'AdminOrders',
         component: () => import('../modules/adminPanel/components/orders.vue')
       },
       {
-        path: 'users',
-        name: 'AdminUsers',
-        component: () => import('../modules/adminPanel/components/users.vue')
+        path: '/admin/customers',
+        name: 'AdminCustomers',
+        component: () => import('../modules/adminPanel/components/customers.vue')
       }
     ],
     meta: { isAdmin: true, layout: 'admin', noLayout: true }
