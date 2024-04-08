@@ -1,5 +1,6 @@
 export default {
   products: {},
   loading: false,
-  categories: []
+  categories: [],
+  totalProducts: 0
 }

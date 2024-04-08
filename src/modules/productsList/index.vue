@@ -190,7 +190,7 @@ export default {
     this.fetchCategories()
   },
   computed: {
-    ...mapState('products', ['products', 'loading', 'categories'])
+    ...mapState('products', ['products', 'loading', 'categories', 'totalProducts'])
   },
   methods: {
     ...mapActions('products', ['fetchProducts', 'fetchCategories']),
@@ -232,7 +232,11 @@ export default {
   <div class="formgrid grid">
     <div class="col-2">
       <div class="card mb-0 p-3 sticky top-0">
-        <h3 class="text-2xl font-semibold text-900">Filters</h3>
+        <Skeleton v-if="loading" class="mb-2"></Skeleton>
+        <template v-else>
+        <span class="text-sm font-bold text-600">{{ totalProducts }}</span>
+        <span class="text-sm text-700"> Products listed</span>
+        </template>
         <Divider />
         <h2 class="text-lg font-semibold text-700">Categories</h2>
         <Listbox
@@ -316,7 +320,6 @@ export default {
             </div>
           </template>
         </Listbox>
-        <Divider />
       </div>
     </div>
     <div class="col">

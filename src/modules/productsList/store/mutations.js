@@ -7,5 +7,8 @@ export default {
   },
   setCategories(state, value) {
     state.categories = value
+  },
+  setTotalProducts(state, value) {
+    state.totalProducts = value
   }
 }

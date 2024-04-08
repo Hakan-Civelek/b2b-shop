@@ -7,6 +7,7 @@ export default {
     return axios.get(`/products${params ? `/category/${params}` : ''}`)
       .then(({ data }) => {
         commit('setProducts', data.products);
+        commit('setTotalProducts', data.total);
         commit('setLoading', false);
       })
   },
