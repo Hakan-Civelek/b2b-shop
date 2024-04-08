@@ -181,7 +181,12 @@ export default {
         }
       ],
       selectedEvoulotionRate: [],
-      selectedCategories: null
+      filters: {
+        brand: null,
+        priceRange: null,
+        evoulotionRate: null,
+        categories: null
+      },
     }
   },
   mixins: [ToastMixin],
@@ -218,8 +223,8 @@ export default {
       })
     },
     filterProducts() {
-      if (this.selectedCategories) {
-        this.fetchProducts(this.selectedCategories.value)
+      if (this.filters.categories) {
+        this.fetchProducts(this.filters.categories.value)
       } else {
         this.fetchProducts()
       }
@@ -231,7 +236,7 @@ export default {
 <template>
   <div class="formgrid grid">
     <div class="col-2">
-      <div class="card mb-0 p-3 sticky top-0">
+      <div class="card mb-0 p-3 sticky top-0 sidebar-height">
         <Skeleton v-if="loading" class="mb-2"></Skeleton>
         <template v-else>
         <span class="text-sm font-bold text-600">{{ totalProducts }}</span>
@@ -240,7 +245,7 @@ export default {
         <Divider />
         <h2 class="text-lg font-semibold text-700">Categories</h2>
         <Listbox
-        v-model="selectedCategories"
+        v-model="filters.categories"
         :options="categories"
         optionLabel="name"
         class="w-full"
@@ -323,7 +328,7 @@ export default {
       </div>
     </div>
     <div class="col">
-      <div class="card mb-0">
+      <div class="card mb-0 h-full">
         <DataView
           :value="products"
           :layout="layout"
@@ -534,6 +539,9 @@ export default {
 </template>
 
 <style>
+.sidebar-height {
+  height: calc(100vh - 23px);
+}
 .p-listbox-list-wrapper {
   max-height: 300px;
   overflow-y: auto;
