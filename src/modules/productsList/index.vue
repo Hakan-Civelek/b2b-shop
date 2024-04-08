@@ -3,6 +3,7 @@ import { mapActions, mapState } from 'vuex'
 import ToastMixin from '@/mixins/toast.js'
 
 export default {
+  name: 'ProductsList',
   data() {
     return {
       mockProducts: null,
@@ -54,38 +55,6 @@ export default {
             {
               label: '2 Star',
               icon: 'pi pi-star',
-              route: '/products'
-            }
-          ]
-        }
-      ],
-      categories: [
-        {
-          label: 'Categories',
-          items: [
-            {
-              label: 'Electronics',
-              icon: 'pi pi-desktop',
-              route: '/products'
-            },
-            {
-              label: 'Furniture',
-              icon: 'pi pi-book',
-              route: '/products'
-            },
-            {
-              label: 'Clothing',
-              icon: 'pi pi-shopping-cart',
-              route: '/products'
-            },
-            {
-              label: 'Sports',
-              icon: 'pi pi-briefcase',
-              route: '/products'
-            },
-            {
-              label: 'Health',
-              icon: 'pi pi-heart',
               route: '/products'
             }
           ]
@@ -211,18 +180,20 @@ export default {
           selected: false
         }
       ],
-      selectedEvoulotionRate: []
+      selectedEvoulotionRate: [],
+      selectedCategories: null
     }
   },
   mixins: [ToastMixin],
   created() {
     this.fetchProducts()
+    this.fetchCategories()
   },
   computed: {
-    ...mapState('products', ['products', 'loading'])
+    ...mapState('products', ['products', 'loading', 'categories'])
   },
   methods: {
-    ...mapActions('products', ['fetchProducts']),
+    ...mapActions('products', ['fetchProducts', 'fetchCategories']),
     getSeverity(product) {
       switch (product.inventoryStatus) {
         case 'INSTOCK':
@@ -245,6 +216,13 @@ export default {
       this.addBasket(product).then(() => {
         this.showSuccessMessage('Product added to basket')
       })
+    },
+    filterProducts() {
+      if (this.selectedCategories) {
+        this.fetchProducts(this.selectedCategories.value)
+      } else {
+        this.fetchProducts()
+      }
     }
   }
 }
@@ -254,8 +232,18 @@ export default {
   <div class="formgrid grid">
     <div class="col-2">
       <div class="card mb-0 p-3 sticky top-0">
-        <PanelMenu expanded :model="categories" multiple />
+        <h3 class="text-2xl font-semibold text-900">Filters</h3>
         <Divider />
+        <h2 class="text-lg font-semibold text-700">Categories</h2>
+        <Listbox
+        v-model="selectedCategories"
+        :options="categories"
+        optionLabel="name"
+        class="w-full"
+        @change="filterProducts"
+        />
+        <Divider />
+        <h2 class="text-lg font-semibold text-700">Brands</h2>
         <Listbox
           v-model="selectedBrands"
           :options="brands"
@@ -280,6 +268,7 @@ export default {
           </template>
         </Listbox>
         <Divider />
+        <h2 class="text-lg font-semibold text-700">Price Range</h2>
         <Listbox
           v-model="selectedPriceRange"
           :options="priceRange"
@@ -303,6 +292,7 @@ export default {
           </template>
         </Listbox>
         <Divider />
+        <h2 class="text-lg font-semibold text-700">Evoulotion Rate</h2>
         <Listbox
           v-model="selectedEvoulotionRate"
           :options="evoulotionRate"
@@ -540,4 +530,9 @@ export default {
   </div>
 </template>
 
-<style></style>
+<style>
+.p-listbox-list-wrapper {
+  max-height: 300px;
+  overflow-y: auto;
+}
+</style>

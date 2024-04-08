@@ -4,5 +4,8 @@ export default {
   },
   setLoading(state, value) {
     state.loading = value
+  },
+  setCategories(state, value) {
+    state.categories = value
   }
 }
