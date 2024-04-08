@@ -1,54 +1,12 @@
 <script>
+import { mapGetters, mapState } from 'vuex'
 export default {
   data() {
-    return {
-      items: [
-        {
-          separator: true
-        },
-        {
-          label: 'Dashboard',
-          icon: 'pi pi-fw pi-home',
-          route: '/admin/dashboard'
-        },
-        {
-          label: 'Products',
-          icon: 'pi pi-fw pi-star',
-          route: '/admin/products'
-        },
-        {
-          label: 'Orders',
-          icon: 'pi pi-fw pi-shopping-cart',
-          route: '/admin/orders'
-        },
-        {
-          label: 'Customers',
-          icon: 'pi pi-fw pi-users',
-          route: '/admin/customers'
-        },
-        {
-          separator: true
-        },
-        {
-          label: 'Profile',
-          icon: 'pi pi-fw pi-user',
-          route: '/profile'
-        },
-        {
-          label: 'Settings',
-          icon: 'pi pi-fw pi-cog',
-          route: '/settings'
-        },
-        {
-          label: 'Logout',
-          icon: 'pi pi-fw pi-power-off',
-          route: '/logout'
-        },
-        {
-          separator: true
-        }
-      ]
-    }
+    return {}
+  },
+  computed: {
+    ...mapGetters('adminPanel', ['dashboardItems']),
+    ...mapState('app', ['user'])
   }
 }
 </script>
@@ -56,7 +14,7 @@ export default {
 <template>
   <div class="formgrid grid">
     <div class="col-2">
-      <Menu :model="items" style="height: calc(100vh - 44px)">
+      <Menu :model="dashboardItems" style="height: calc(100vh - 44px)">
         <template #start>
           <span class="inline-flex align-items-center gap-1 px-2 py-2">
             <span class="font-medium text-4xl font-semibold"
@@ -93,12 +51,12 @@ export default {
             class="relative overflow-hidden w-full p-link flex align-items-center p-2 pl-3 text-color hover:surface-200 border-noround"
           >
             <Avatar
-              image="https://avatars.githubusercontent.com/u/46112930?v=4"
+              :image="user.image"
               class="mr-2"
               shape="circle"
             />
             <span class="inline-flex flex-column">
-              <span class="font-bold">Esat Akpunar</span>
+              <span class="font-bold">{{ user.firstName + ' ' + user.lastName }}</span>
               <span class="text-sm">Admin</span>
             </span>
           </button>
