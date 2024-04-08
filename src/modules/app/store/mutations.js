@@ -3,6 +3,6 @@ export default {
     localStorage.setItem('session_id', value)
   },
   setUser(state, value) {
-    state.loggedUser = value
+    state.user = value
   }
 }
