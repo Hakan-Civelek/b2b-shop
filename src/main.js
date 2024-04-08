@@ -1,4 +1,3 @@
-import '@/assets/flags.css'
 import '@/assets/styles.css'
 import 'primeflex/primeflex.css'
 import 'primeicons/primeicons.css'
