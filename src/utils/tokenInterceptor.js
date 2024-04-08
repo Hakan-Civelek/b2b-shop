@@ -1,4 +1,4 @@
-import axios from 'haxios'
+import axios from 'haxios';
 
 export const addTokenToRequest = (acc) => {
   const sessionId = window.localStorage.getItem('session_id')
