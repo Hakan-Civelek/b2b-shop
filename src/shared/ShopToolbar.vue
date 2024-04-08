@@ -43,10 +43,7 @@ export default {
         {
           label: 'Logout',
           icon: 'pi pi-power-off',
-          route: '/logout',
-          command: () => {
-            this.logout()
-          }
+          route: '/logout'
         }
       ],
       categories: [
@@ -100,9 +97,6 @@ export default {
     },
     toggle(event) {
       this.$refs.menu.toggle(event)
-    },
-    logout() {
-      this.$router.push('/login')
     }
   }
 }
@@ -111,13 +105,11 @@ export default {
 <template>
   <Menubar :model="categories" class="mb-4 py-3 px-4">
     <template #start>
-      <Image
-        src="src/assets/images/b2blogo.png"
-        width="70"
-        height="70"
-        class="cursor-pointer"
-        @click="routePath('/')"
-      />
+      <span class="inline-flex align-items-center gap-1 px-6 py-2">
+        <span class="font-medium text-4xl font-semibold"
+          >B2B<span class="text-primary">SHOP</span></span
+        >
+      </span>
     </template>
     <template #item="{ item, props, hasSubmenu, root }">
       <a

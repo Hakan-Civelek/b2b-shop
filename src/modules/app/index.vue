@@ -18,10 +18,9 @@ export default {
   },
   created() {
     this.isLoading = true
-    this.getLoggedInUser()
-      .then(() => {
-        this.isLoading = false
-      })
+    this.getLoggedInUser().finally(() => {
+      this.isLoading = false
+    })
   },
   methods: {
     ...mapActions('app', ['getLoggedInUser'])

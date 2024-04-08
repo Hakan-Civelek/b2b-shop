@@ -1,4 +1,5 @@
-import axios from 'haxios'
+import router from '@/router';
+import axios from 'haxios';
 
 export default {
   login({ commit, dispatch }, payload) {
@@ -7,6 +8,12 @@ export default {
 
       return dispatch('getLoggedInUser')
     })
+  },
+  logout({ commit }) {
+    commit('setToken', '')
+    commit('setUser', {})
+
+    router.push('/login')
   },
   getLoggedInUser({ commit }) {
     return axios.get('/auth/me').then(({ data }) => {

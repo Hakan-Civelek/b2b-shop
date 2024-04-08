@@ -19,7 +19,6 @@ export default {
     doLogin() {
       this.login(this.credentials)
         .then(() => {
-          console.log(this.isAdmin)
           if (this.isAdmin) this.$router.push('/admin/dashboard')
           else this.$router.push('/products')
         })

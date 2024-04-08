@@ -6,6 +6,20 @@ const router = createRouter({
 })
 
 const handleBeforeEach = (to, from, next) => {
+  if (to.path === '/login') {
+    const sessionId = localStorage.getItem('session_id')
+    if (sessionId) {
+      next({ path: '/' })
+    } else {
+      next()
+    }
+  }
+
+  if (to.path === '/logout') {
+    localStorage.clear()
+    next({ path: '/login' })
+  }
+
   if (to.meta.noLayout) {
     next()
   } else {
