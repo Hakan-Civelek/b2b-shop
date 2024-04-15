@@ -31,7 +31,7 @@ export default {
       {
         label: 'Profile',
         icon: 'pi pi-fw pi-user',
-        route: '/profile'
+        route: '/admin/profile'
       },
       {
         label: 'Settings',

@@ -1,4 +1,4 @@
-import store from '../store'; // Vuex store'u dahil edin
+import store from '../store';
 
 export default [
   {
@@ -63,6 +63,11 @@ export default [
         path: '/admin/customers',
         name: 'AdminCustomers',
         component: () => import('../modules/adminPanel/components/customers.vue')
+      },
+      {
+        path: '/admin/profile',
+        name: 'AdminProfile',
+        component: () => import('../modules/adminPanel/components/profile.vue')
       }
     ],
     meta: { isAdmin: true, layout: 'admin', noLayout: true }
