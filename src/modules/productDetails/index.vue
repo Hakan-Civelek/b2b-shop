@@ -118,6 +118,7 @@ export default {
                   showButtons
                   buttonLayout="horizontal"
                   inputClass="sm:w-4rem h-3rem"
+                  :allowEmpty="false"
                   :min="1"
                   :max="productDetails?.stock"
                 >

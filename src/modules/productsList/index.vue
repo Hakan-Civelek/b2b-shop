@@ -403,7 +403,25 @@ export default {
                     <div class="flex flex-column md:align-items-end gap-5">
                       <span class="text-xl font-semibold text-900">${{ item.price }}</span>
                       <div class="flex flex-row-reverse md:flex-row gap-2">
-                        <Button icon="pi pi-heart" outlined></Button>
+                      <div class="flex">
+                        <InputNumber
+                          v-model="item.quantity"
+                          inputId="horizontal-buttons"
+                          showButtons
+                          buttonLayout="horizontal"
+                          inputClass="sm:w-4rem h-3rem"
+                          :allowEmpty="false"
+                          :min="1"
+                          :max="item?.stock"
+                        >
+                          <template #incrementbuttonicon>
+                            <span class="pi pi-plus" />
+                          </template>
+                          <template #decrementbuttonicon>
+                            <span class="pi pi-minus" />
+                          </template>
+                        </InputNumber>
+                      </div>
                         <Button
                           icon="pi pi-shopping-cart"
                           label="Buy Now"
@@ -505,6 +523,7 @@ export default {
                           showButtons
                           buttonLayout="horizontal"
                           inputClass="sm:w-4rem h-3rem"
+                          :allowEmpty="false"
                           :min="1"
                           :max="item?.stock"
                         >
