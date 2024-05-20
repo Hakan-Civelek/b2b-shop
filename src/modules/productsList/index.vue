@@ -195,10 +195,10 @@ export default {
     this.fetchCategories()
   },
   computed: {
-    ...mapState('products', ['products', 'loading', 'categories', 'totalProducts'])
+    ...mapState('productsList', ['products', 'loading', 'categories', 'totalProducts'])
   },
   methods: {
-    ...mapActions('products', ['fetchProducts', 'fetchCategories']),
+    ...mapActions('productsList', ['fetchProducts', 'fetchCategories', 'addBasket']),
     getSeverity(product) {
       switch (product.inventoryStatus) {
         case 'INSTOCK':
@@ -217,7 +217,7 @@ export default {
     goProductDetail(product) {
       this.$router.push(`/products/${product.id}`)
     },
-    addBasket(product) {
+    addProductBasket(product) {
       this.addBasket(product).then(() => {
         this.showSuccessMessage('Product added to basket')
       })
@@ -409,7 +409,7 @@ export default {
                           label="Buy Now"
                           :disabled="item.inventoryStatus === 'OUTOFSTOCK'"
                           class="flex-auto md:flex-initial white-space-nowrap"
-                          @click="addBasket(item)"
+                          @click="addProductBasket(item)"
                         ></Button>
                       </div>
                     </div>
@@ -498,14 +498,31 @@ export default {
                     <div class="flex flex-column gap-4 mt-4">
                       <span class="text-2xl font-semibold text-900">${{ item.price }}</span>
                       <div class="flex gap-2">
+                      <div class="flex">
+                        <InputNumber
+                          v-model="item.quantity"
+                          inputId="horizontal-buttons"
+                          showButtons
+                          buttonLayout="horizontal"
+                          inputClass="sm:w-4rem h-3rem"
+                          :min="1"
+                          :max="item?.stock"
+                        >
+                          <template #incrementbuttonicon>
+                            <span class="pi pi-plus" />
+                          </template>
+                          <template #decrementbuttonicon>
+                            <span class="pi pi-minus" />
+                          </template>
+                        </InputNumber>
+                      </div>
                         <Button
                           icon="pi pi-shopping-cart"
                           label="Buy Now"
                           :disabled="item.inventoryStatus === 'OUTOFSTOCK'"
                           class="flex-auto white-space-nowrap"
-                          @click="addBasket(item)"
+                          @click="addProductBasket(item)"
                         ></Button>
-                        <Button icon="pi pi-heart" outlined></Button>
                       </div>
                     </div>
                   </div>

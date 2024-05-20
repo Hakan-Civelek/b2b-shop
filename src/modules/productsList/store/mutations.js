@@ -10,5 +10,8 @@ export default {
   },
   setTotalProducts(state, value) {
     state.totalProducts = value
-  }
+  },
+  setBasket(state, value) {
+    state.basket = value
+  },
 }

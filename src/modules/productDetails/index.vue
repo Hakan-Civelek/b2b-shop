@@ -20,6 +20,7 @@ export default {
   },
   methods: {
     ...mapActions('productDetails', ['fetchProductDetails']),
+    ...mapActions('productsList', ['addBasket']),
     selectImage(index) {
       this.selectedIndex = index
     },
@@ -29,7 +30,14 @@ export default {
         this.productDetails = data
         this.isLoading = false
       })
-    }
+    },
+    addProductBasket(product) {
+      product = { ...product, quantity: this.quantity }
+      this.addBasket(product).then(() => {
+        this.showSuccessMessage('Product added to basket')
+      })
+    },
+
   }
 }
 </script>
@@ -127,7 +135,7 @@ export default {
                   label="Add to Cart"
                   size="large"
                   class="flex-auto w-full white-space-nowrap"
-                  @click="addBasket(item)"
+                  @click="addProductBasket(productDetails)"
                 ></Button>
                 <Button icon="pi pi-heart" size="large" outlined></Button>
               </div>

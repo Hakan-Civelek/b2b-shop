@@ -22,6 +22,12 @@ export default {
         })
         commit('setCategories', categories);
       })
+  },
+  addBasket({ commit }, product) {
+    return axios.post('/basket', product)
+      .then(({ data }) => {
+        commit('setBasket', data);
+      })
   }
 }
 
