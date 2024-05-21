@@ -4,9 +4,9 @@ export default {
   fetchProducts({ commit }, params) {
     commit('setLoading', true);
 
-    return axios.get(`/products${params ? `/category/${params}` : ''}`)
+    return axios.get(`/product${params ? `/category/${params}` : ''}`)
       .then(({ data }) => {
-        commit('setProducts', data.products);
+        commit('setProducts', data);
         commit('setTotalProducts', data.total);
         commit('setLoading', false);
       })

@@ -3,7 +3,7 @@ import axios from 'haxios';
 
 export default {
   login({ commit, dispatch }, payload) {
-    return axios.post('/auth/login', payload).then(({ data }) => {
+    return axios.post('/login', payload).then(({ data }) => {
       commit('setToken', data.token)
 
       return dispatch('getLoggedInUser')
@@ -16,7 +16,7 @@ export default {
     router.push('/login')
   },
   getLoggedInUser({ commit }) {
-    return axios.get('/auth/me').then(({ data }) => {
+    return axios.get('/user/me').then(({ data }) => {
       commit('setUser', data)
     })
   }

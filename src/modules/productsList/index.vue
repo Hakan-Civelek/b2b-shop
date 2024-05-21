@@ -383,7 +383,7 @@ export default {
                           class="text-lg font-medium text-900 mt-2 cursor-pointer"
                           @click="goProductDetail(item)"
                         >
-                          {{ item.title }}
+                          {{ item.name }}
                         </div>
                       </div>
                       <div class="surface-100 p-1" style="border-radius: 30px">
@@ -401,7 +401,7 @@ export default {
                       </div>
                     </div>
                     <div class="flex flex-column md:align-items-end gap-5">
-                      <span class="text-xl font-semibold text-900">${{ item.price }}</span>
+                      <span class="text-xl font-semibold text-900">${{ item.salesPrice }}</span>
                       <div class="flex flex-row-reverse md:flex-row gap-2">
                       <div class="flex">
                         <InputNumber
@@ -485,7 +485,7 @@ export default {
                       <img
                         class="border-round w-full"
                         :src="item.thumbnail"
-                        :alt="item.title"
+                        :alt="item.name"
                         style="width: 300px; height: 200px; object-fit: contain; cursor: pointer"
                       />
                       <Tag
@@ -509,12 +509,12 @@ export default {
                           class="text-lg font-medium text-900 mt-1 cursor-pointer"
                           @click="goProductDetail(item)"
                         >
-                          {{ item.title }}
+                          {{ item.name }}
                         </div>
                       </div>
                     </div>
                     <div class="flex flex-column gap-4 mt-4">
-                      <span class="text-2xl font-semibold text-900">${{ item.price }}</span>
+                      <span class="text-2xl font-semibold text-900">${{ item.salesPrice }}</span>
                       <div class="flex gap-2">
                       <div class="flex">
                         <InputNumber
