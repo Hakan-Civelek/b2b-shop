@@ -2,21 +2,22 @@ import router from '@/router';
 import axios from 'haxios';
 
 export default {
-  login({ commit, dispatch }, payload) {
+  login({ commit }, payload) {
     return axios.post('/login', payload).then(({ data }) => {
       commit('setToken', data.token)
-
-      return dispatch('getLoggedInUser')
     })
   },
   logout({ commit }) {
-    commit('setToken', '')
+    localStorage.clear()
     commit('setUser', {})
-
+    commit('setAdmin', false)
     router.push('/login')
   },
   getLoggedInUser({ commit }) {
     return axios.get('/user/me').then(({ data }) => {
+      if (data.authorities.includes('ROLE_SYSTEM_OWNER')) {
+        commit('setAdmin', true)
+      }
       commit('setUser', data)
     })
   }

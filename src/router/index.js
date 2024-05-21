@@ -4,23 +4,19 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
 })
-const sessionId = localStorage.getItem('session_id')
 
 const handleBeforeEach = (to, from, next) => {
+  const sessionId = localStorage.getItem('session_id')
   if (to.path === '/login') {
     if (sessionId) {
       next({ path: '/' })
     } else {
       next()
     }
-  }
-
-  if (to.path === '/logout') {
+  } else if (to.path === '/logout') {
     localStorage.clear()
     next({ path: '/login' })
-  }
-
-  if (to.meta.noLayout) {
+  } else if (to.meta.noLayout) {
     next()
   } else {
     if (sessionId) {

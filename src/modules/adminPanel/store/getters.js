@@ -36,7 +36,7 @@ export default {
       {
         label: 'Settings',
         icon: 'pi pi-fw pi-cog',
-        route: '/settings'
+        route: '/admin/settings'
       },
       {
         label: 'Logout',

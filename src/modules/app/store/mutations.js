@@ -4,5 +4,8 @@ export default {
   },
   setUser(state, value) {
     state.user = value
+  },
+  setAdmin(state, value) {
+    state.isAdmin = value
   }
 }

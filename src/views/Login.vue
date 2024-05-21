@@ -1,26 +1,29 @@
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import ToastMixin from '@/mixins/toast.js'
 export default {
   data() {
     return {
       credentials: {
-        username: 'kminchelle',
-        password: '0lelplR'
+        username: 'esat',
+        password: 'pass',
+        tenantId: ''
       }
     }
   },
   mixins: [ToastMixin],
   computed: {
-    ...mapGetters('app', ['isAdmin'])
+    ...mapState('app', ['user', 'isAdmin'])
   },
   methods: {
-    ...mapActions('app', ['login']),
+    ...mapActions('app', ['login', 'getLoggedInUser']),
     doLogin() {
       this.login(this.credentials)
         .then(() => {
-          if (this.isAdmin) this.$router.push('/admin/dashboard')
-          else this.$router.push('/products')
+          this.getLoggedInUser().then(() => {
+            if (this.isAdmin) this.$router.push('/admin/dashboard')
+            else this.$router.push('/products')
+          })
         })
         .catch(() => {
           this.showErrorMessage('Invalid credentials')
@@ -61,6 +64,16 @@ export default {
           id="password1"
           type="password"
           placeholder="Password"
+          class="w-full mb-3"
+          @keypress.enter="doLogin"
+        />
+
+        <label for="tenant" class="block text-900 font-medium mb-2">Tenant ID</label>
+        <InputText
+          v-model="credentials.tenantId"
+          id="tenantId"
+          type="text"
+          placeholder="Tenant ID"
           class="w-full mb-3"
           @keypress.enter="doLogin"
         />

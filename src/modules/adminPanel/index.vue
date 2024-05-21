@@ -1,5 +1,5 @@
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   data() {
     return {}
@@ -7,6 +7,9 @@ export default {
   computed: {
     ...mapGetters('adminPanel', ['dashboardItems']),
     ...mapState('app', ['user'])
+  },
+  methods: {
+    ...mapActions('app', ['logout'])
   }
 }
 </script>

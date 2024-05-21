@@ -1,4 +1,4 @@
-import store from '../store';
+import store from '@/store';
 
 export default [
   {
@@ -37,10 +37,12 @@ export default [
     name: 'AdminPanel',
     component: () => import('../modules/adminPanel/index.vue'),
     beforeEnter: (to, from, next) => {
-      if (store.getters['app/isAdmin']) {
+      if (store.state.app.isAdmin) {
+        console.log('admin');
         next()
       } else {
-        next('/login')
+        console.log('not admin');
+        next('/products')
       }
     },
     children: [
@@ -68,6 +70,11 @@ export default [
         path: '/admin/profile',
         name: 'AdminProfile',
         component: () => import('../modules/adminPanel/components/profile.vue')
+      },
+      {
+        path: '/admin/settings',
+        name: 'AdminSettings',
+        component: () => import('../modules/adminPanel/components/settings.vue')
       }
     ],
     meta: { isAdmin: true, layout: 'admin', noLayout: true }

@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
 
@@ -43,7 +43,10 @@ export default {
         {
           label: 'Logout',
           icon: 'pi pi-power-off',
-          route: '/logout'
+          route: '/logout',
+          command: () => {
+            this.logout()
+          }
         }
       ],
       categories: [
@@ -81,9 +84,10 @@ export default {
     InputIcon
   },
   computed: {
-    ...mapGetters('app', ['isAdmin'])
+    ...mapState('app', ['isAdmin'])
   },
   methods: {
+    ...mapActions('app', ['logout']),
     routePath(event) {
       this.$router.push(event)
     },
@@ -174,7 +178,29 @@ export default {
           aria-controls="overlay_tmenu"
           @click="toggle"
         />
-        <Menu ref="menu" id="overlay_tmenu" :model="items" popup />
+        {{ isAdmin }}
+        <Menu ref="menu" id="overlay_tmenu" :model="items" popup>
+          <template #item="{ item, props }">
+            <router-link v-slot="{ href, navigate }" :to="item.route" custom>
+              <a
+                v-ripple
+                class="flex align-items-center"
+                v-bind="props.action"
+                :href="href"
+                @click="navigate"
+              >
+                <span :class="item.icon" />
+                <span class="ml-2">{{ item.label }}</span>
+                <Badge v-if="item.badge" class="ml-auto" :value="item.badge" />
+                <span
+                  v-if="item.shortcut"
+                  class="ml-auto border-1 surface-border border-round surface-100 text-xs p-1"
+                  >{{ item.shortcut }}</span
+                >
+              </a>
+            </router-link>
+          </template>
+        </Menu>
       </div>
     </template>
   </Menubar>
