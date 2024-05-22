@@ -32,7 +32,7 @@ export default {
     this.fetchData();
   },
   methods: {
-    ...mapActions('managementTable', ['fetchTableDatas', 'deleteTableData']),
+    ...mapActions('managementTable', ['fetchTableDatas', 'deleteTableData', 'addItem', 'updateItem']),
     ...mapActions('adminPanel', ['uploadImage']),
     fetchData() {
       this.isLoading = true
@@ -63,7 +63,9 @@ export default {
       return
     },
     openNew() {
-      this.product = {}
+      this.product = {
+        isActive: true,
+      }
       this.submitted = false
       this.productDialog = true
     },
@@ -74,32 +76,43 @@ export default {
     saveProduct() {
       this.submitted = true
 
+      console.log(this.product);
+
       if (this.product?.name?.trim()) {
         if (this.product.id) {
-          this.product.inventoryStatus = this.product.inventoryStatus.value
-            ? this.product.inventoryStatus.value
-            : this.product.inventoryStatus
-          this.products[this.findIndexById(this.product.id)] = this.product
-          this.$toast.add({
-            severity: 'success',
-            summary: 'Successful',
-            detail: 'Product Updated',
-            life: 3000
+          this.updateItem({
+            url: `/product/${this.product.id}`,
+            data: this.product
           })
+            .then(({ data }) => {
+              this.fetchData()
+              console.log(data);
+            })
+            .catch((error) => {
+              this.$toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.message,
+                life: 3000
+              })
+            })
         } else {
-          this.product.id = this.createId()
-          this.product.code = this.createId()
-          this.product.image = 'product-placeholder.svg'
-          this.product.inventoryStatus = this.product.inventoryStatus
-            ? this.product.inventoryStatus.value
-            : 'INSTOCK'
-          this.products.push(this.product)
-          this.$toast.add({
-            severity: 'success',
-            summary: 'Successful',
-            detail: 'Product Created',
-            life: 3000
+          this.addItem({
+            url: '/product',
+            data: this.product
           })
+            .then(({ data }) => {
+              this.fetchData()
+              console.log(data);
+            })
+            .catch((error) => {
+              this.$toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.message,
+                life: 3000
+              })
+            })
         }
 
         this.productDialog = false
@@ -209,7 +222,7 @@ export default {
             console.log(error)
           })
       }
-    }
+    },
   }
 }
 </script>
@@ -298,7 +311,7 @@ export default {
       </Column>
       <Column field="category" header="Category" sortable style="min-width: 10rem"></Column>
       <Column field="stock" header="Stock" sortable style="min-width: 8rem"></Column>
-      <Column field="inventoryStatus" header="Status" sortable style="min-width: 8rem">
+      <Column field="isActive" header="Status" sortable style="min-width: 8rem">
         <template #body="slotProps">
           <Tag
             :value="slotProps.data.isActive ? 'Active' : 'Inactive'"
@@ -340,6 +353,17 @@ export default {
         class="block m-auto pb-3"
       />
       <div class="field">
+        <label for="code">Code</label>
+        <InputText
+          id="code"
+          v-model.trim="product.code"
+          required="true"
+          autofocus
+          :invalid="submitted && !product.code"
+        />
+        <small class="p-error" v-if="submitted && !product.code">Code is required.</small>
+      </div>
+      <div class="field">
         <label for="name">Name</label>
         <InputText
           id="name"
@@ -349,6 +373,10 @@ export default {
           :invalid="submitted && !product.name"
         />
         <small class="p-error" v-if="submitted && !product.name">Name is required.</small>
+      </div>
+      <div class="field">
+        <label for="gtin">GTIN</label>
+        <InputText id="gtin" v-model.trim="product.gtin" />
       </div>
       <div class="field">
         <label for="description">Description</label>
@@ -362,92 +390,55 @@ export default {
       </div>
 
       <div class="field">
-        <label for="inventoryStatus" class="mb-3">Inventory Status</label>
-        <Dropdown
-          id="inventoryStatus"
-          v-model="product.inventoryStatus"
-          :options="statuses"
-          optionLabel="label"
-          placeholder="Select a Status"
-        >
-          <template #value="slotProps">
-            <div v-if="slotProps.value && slotProps.value.value">
-              <Tag
-                :value="slotProps.value.value"
-                :severity="getStatusLabel(slotProps.value.label)"
-              />
-            </div>
-            <div v-else-if="slotProps.value && !slotProps.value.value">
-              <Tag :value="slotProps.value" :severity="getStatusLabel(slotProps.value)" />
-            </div>
-            <span v-else>
-              {{ slotProps.placeholder }}
-            </span>
-          </template>
-        </Dropdown>
+        <label for="isActive">Status</label>
+        <Checkbox id="isActive" v-model="product.isActive" binary />
       </div>
 
       <div class="field">
+        <label for="stock">Stock</label>
+        <InputNumber id="stock" v-model="product.stock" integeronly />
+      </div>
+
+      <!-- <div class="field">
         <label for="image">Image</label>
         <FileUpload mode="basic" name="demo[]" url="api/image" accept="image/*" customUpload @uploader="myUploader" :auto="true" />
-      </div>
+      </div> -->
 
       <div class="field">
-        <label class="mb-3">Category</label>
-        <div class="formgrid grid">
-          <div class="field-radiobutton col-6">
-            <RadioButton
-              id="category1"
-              name="category"
-              value="Accessories"
-              v-model="product.category"
-            />
-            <label for="category1">Accessories</label>
-          </div>
-          <div class="field-radiobutton col-6">
-            <RadioButton
-              id="category2"
-              name="category"
-              value="Clothing"
-              v-model="product.category"
-            />
-            <label for="category2">Clothing</label>
-          </div>
-          <div class="field-radiobutton col-6">
-            <RadioButton
-              id="category3"
-              name="category"
-              value="Electronics"
-              v-model="product.category"
-            />
-            <label for="category3">Electronics</label>
-          </div>
-          <div class="field-radiobutton col-6">
-            <RadioButton
-              id="category4"
-              name="category"
-              value="Fitness"
-              v-model="product.category"
-            />
-            <label for="category4">Fitness</label>
-          </div>
-        </div>
+        <label for="category">Category</label>
+        <Dropdown
+          id="category"
+          v-model="product.category"
+          :options="categories"
+          optionLabel="name"
+          optionValue="name"
+          placeholder="Select a Category"
+        />
       </div>
-
+      <div class="field">
+        <label for="vatRate">VAT Rate</label>
+        <InputNumber id="vatRate" v-model="product.vatRate" mode="decimal" prefix="%" />
+      </div>
       <div class="formgrid grid">
         <div class="field col">
-          <label for="price">Price</label>
+          <label for="price">Sales Price</label>
           <InputNumber
             id="price"
-            v-model="product.price"
+            v-model="product.salesPrice"
             mode="currency"
-            currency="USD"
-            locale="en-US"
+            currency="TRY"
+            locale="tr-tr"
           />
         </div>
         <div class="field col">
-          <label for="stock">Stock</label>
-          <InputNumber id="stock" v-model="product.stock" integeronly />
+          <label for="cost">Gross Price</label>
+          <InputNumber
+            id="cost"
+            v-model="product.grossPrice"
+            mode="currency"
+            currency="TRY"
+            locale="tr-tr"
+          />
         </div>
       </div>
       <template #footer>

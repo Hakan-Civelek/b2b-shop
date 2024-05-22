@@ -6,5 +6,11 @@ export default {
   },
   deleteTableData(_, deleteParams) {
     return axios.delete(`${deleteParams.url}`);
+  },
+  addItem(_, addParams) {
+    return axios.post(`${addParams.url}`, addParams.data);
+  },
+  updateItem(_, updateParams) {
+    return axios.put(`${updateParams.url}`, updateParams.data);
   }
 }
