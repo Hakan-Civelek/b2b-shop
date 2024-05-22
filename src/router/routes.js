@@ -10,12 +10,12 @@ export default [
   {
     path: '/',
     name: 'mainView',
-    component: import('../modules/mainView/index.vue')
+    component: import('../modules/mainView/index.vue'),
   },
   {
     path: '/products',
     name: 'products',
-    component: () => import('../modules/productsList/index.vue')
+    component: () => import('../modules/productsList/index.vue'),
   },
   {
     path: '/products/:id',
@@ -37,11 +37,9 @@ export default [
     name: 'AdminPanel',
     component: () => import('../modules/adminPanel/index.vue'),
     beforeEnter: (to, from, next) => {
-      if (store.state.app.isAdmin) {
-        console.log('admin');
+      if (store.state.app.isAdmin || store.state.app.isMaster) {
         next()
       } else {
-        console.log('not admin');
         next('/products')
       }
     },
