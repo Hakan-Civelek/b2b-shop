@@ -1,4 +1,5 @@
 export default {
   user: {},
-  isAdmin: null
+  isAdmin: null,
+  isMaster: null
 }

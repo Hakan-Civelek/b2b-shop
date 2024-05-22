@@ -6,6 +6,11 @@ export default {
     state.user = value
   },
   setAdmin(state, value) {
+    localStorage.setItem('isAdmin', value)
     state.isAdmin = value
+  },
+  setMaster(state, value) {
+    localStorage.setItem('isMaster', value)
+    state.isMaster = value
   }
 }
