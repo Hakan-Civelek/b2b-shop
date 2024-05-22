@@ -11,7 +11,7 @@ export default {
 <template>
   <div>
     <ManagementTable
-      domain="/orders"
+      domain="/order"
       title="Orders"
     />
   </div>
