@@ -36,7 +36,7 @@ export default {
           route: '/admin',
           command: () => {
             if (this.isAdmin) this.routePath('/admin/dashboard')
-            else this.routePath('/')
+            else this.routePath('/products')
           },
           visible: this.isAdmin
         },
@@ -178,7 +178,7 @@ export default {
           aria-controls="overlay_tmenu"
           @click="toggle"
         />
-        {{ isAdmin }}
+        {{ isAdmin ? 'Admin' : 'User' }}
         <Menu ref="menu" id="overlay_tmenu" :model="items" popup>
           <template #item="{ item, props }">
             <router-link v-slot="{ href, navigate }" :to="item.route" custom>
