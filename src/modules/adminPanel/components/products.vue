@@ -1,7 +1,6 @@
 <script>
 import { mapActions } from 'vuex'
 import { FilterMatchMode } from 'primevue/api'
-import { ProductService } from '@/service/ProductService'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
 
@@ -31,9 +30,6 @@ export default {
   created() {
     this.initFilters();
     this.fetchData();
-  },
-  mounted() {
-    ProductService.getProducts().then((data) => (this.products = data))
   },
   methods: {
     ...mapActions('managementTable', ['fetchTableDatas', 'deleteTableData']),
