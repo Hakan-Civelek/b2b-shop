@@ -63,9 +63,9 @@ export default [
         component: () => import('../modules/adminPanel/components/orders.vue')
       },
       {
-        path: '/admin/customers',
-        name: 'AdminCustomers',
-        component: () => import('../modules/adminPanel/components/customers.vue')
+        path: '/admin/users',
+        name: 'AdminUsers',
+        component: () => import('../modules/adminPanel/components/users.vue')
       },
       {
         path: '/admin/profile',

@@ -5,23 +5,19 @@ import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
 
 export default {
-  name: 'Customers',
+  name: 'Users',
   data() {
     return {
-      customers: null,
-      customerDialog: false,
-      deleteCustomerDialog: false,
-      deleteCustomersDialog: false,
-      customer: {},
-      selectedCustomers: [],
+      users: null,
+      userDialog: false,
+      deleteUserDialog: false,
+      deleteUsersDialog: false,
+      user: {},
+      selectedUsers: [],
       filters: {},
       submitted: false,
-      statuses: [
-        { label: 'INSTOCK', value: 'instock' },
-        { label: 'LOWSTOCK', value: 'lowstock' },
-        { label: 'OUTOFSTOCK', value: 'outofstock' }
-      ],
       items: [],
+      isLoading: true,
     }
   },
   components: {
@@ -33,13 +29,11 @@ export default {
     this.fetchData();
   },
   methods: {
-    ...mapActions('managementTable', ['fetchTableDatas', 'deleteTableData']),
+    ...mapActions('managementTable', ['fetchTableDatas', 'deleteTableData', 'updateItem', 'addItem']),
     ...mapActions('adminPanel', ['uploadImage']),
     fetchData() {
-      this.isLoading = true
-
       return this.fetchTableDatas({
-        url: '/customer'
+        url: '/user'
       })
         .then(({ data }) => {
           // this.headers = response.meta.tableSettings
@@ -64,62 +58,69 @@ export default {
       return
     },
     openNew() {
-      this.customer = {}
+      this.user = {}
       this.submitted = false
-      this.customerDialog = true
+      this.userDialog = true
     },
     hideDialog() {
-      this.customerDialog = false
+      this.userDialog = false
       this.submitted = false
     },
-    saveCustomer() {
+    saveUser() {
       this.submitted = true
-
-      if (this.customer?.name?.trim()) {
-        if (this.customer.id) {
-          this.customer.inventoryStatus = this.customer.inventoryStatus.value
-            ? this.customer.inventoryStatus.value
-            : this.customer.inventoryStatus
-          this.customers[this.findIndexById(this.customer.id)] = this.customer
-          this.$toast.add({
-            severity: 'success',
-            summary: 'Successful',
-            detail: 'Customer Updated',
-            life: 3000
+      console.log(this.user);
+      if (this.user?.name?.trim()) {
+        if (this.user.id) {
+          this.updateItem({
+            url: `/user/${this.user.id}`,
+            data: this.user
           })
+            .then(() => {
+              this.fetchData()
+            })
+            .catch((error) => {
+              this.$toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.message,
+                life: 3000
+              })
+            })
         } else {
-          this.customer.id = this.createId()
-          this.customer.code = this.createId()
-          this.customer.image = 'customer-placeholder.svg'
-          this.customer.inventoryStatus = this.customer.inventoryStatus
-            ? this.customer.inventoryStatus.value
-            : 'INSTOCK'
-          this.customers.push(this.customer)
-          this.$toast.add({
-            severity: 'success',
-            summary: 'Successful',
-            detail: 'Customer Created',
-            life: 3000
+          this.addItem({
+            url: '/user',
+            data: this.user
           })
+            .then(() => {
+              this.fetchData()
+            })
+            .catch((error) => {
+              this.$toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.message,
+                life: 3000
+              })
+            })
         }
 
-        this.customerDialog = false
-        this.customer = {}
+        this.userDialog = false
+        this.user = {}
       }
     },
-    editCustomer(customer) {
-      this.customer = { ...customer }
-      this.customerDialog = true
+    editUser(user) {
+      this.user = { ...user }
+      this.userDialog = true
     },
-    confirmDeleteCustomer(customer) {
-      this.customer = customer
-      this.deleteCustomerDialog = true
+    confirmDeleteUser(user) {
+      this.user = user
+      this.deleteUserDialog = true
     },
-    deleteSelectedCustomers() {
+    deleteSelectedUsers() {
       this.isLoading = true
 
       return this.deleteTableData({
-        url: `/customer/${this.selectedCustomers[0].id}`,
+        url: `/user/${this.selectedUsers[0].id}`,
       })
         .then(({ data }) => {
           // this.headers = response.meta.tableSettings
@@ -139,8 +140,8 @@ export default {
     },
     findIndexById(id) {
       let index = -1
-      for (let i = 0; i < this.customers.length; i++) {
-        if (this.customers[i].id === id) {
+      for (let i = 0; i < this.users.length; i++) {
+        if (this.users[i].id === id) {
           index = i
           break
         }
@@ -161,19 +162,7 @@ export default {
       this.$refs.dt.exportCSV()
     },
     confirmDeleteSelected() {
-      this.deleteCustomersDialog = true
-    },
-    deleteSelectedCustomerss() {
-      console.log(this.selectedCustomers);
-      this.customers = this.customers.filter((val) => !this.selectedCustomers.includes(val))
-      this.deleteCustomersDialog = false
-      this.selectedCustomers = null
-      this.$toast.add({
-        severity: 'success',
-        summary: 'Successful',
-        detail: 'Customers Deleted',
-        life: 3000
-      })
+      this.deleteUsersDialog = true
     },
     initFilters() {
       this.filters = {
@@ -199,7 +188,7 @@ export default {
       reader.onload = () => {
         const formData = new FormData()
         formData.append('file', file)
-        formData.append('customerId', this.customer.id)
+        formData.append('userId', this.user.id)
 
         this.uploadImage(formData)
           .then((response) => {
@@ -220,11 +209,18 @@ export default {
       <template #start>
         <Button label="New" icon="pi pi-plus" severity="success" class="mr-2" @click="openNew" />
         <Button
+          class="mr-2"
           label="Delete"
           icon="pi pi-trash"
           severity="danger"
           @click="confirmDeleteSelected"
-          :disabled="!selectedCustomers || !selectedCustomers.length"
+          :disabled="!selectedUsers || !selectedUsers.length"
+        />
+        <Button
+          icon="pi pi-refresh"
+          severity="info"
+          class="mr-2"
+          @click="fetchData"
         />
       </template>
 
@@ -244,21 +240,22 @@ export default {
     <DataTable
       ref="dt"
       :value="items"
-      v-model:selection="selectedCustomers"
+      v-model:selection="selectedUsers"
       size="small"
       dataKey="id"
+      :loading="isLoading"
       :paginator="true"
       :rows="10"
       :filters="filters"
       paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
       :rowsPerPageOptions="[5, 10, 25]"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} customers"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} users"
       scrollable
       scrollHeight="calc(100vh - 249px)"
     >
       <template #header>
         <div class="flex flex-wrap gap-2 align-items-center justify-content-between">
-          <h4 class="m-0">{{ Customers }}</h4>
+          <h4 class="m-0">{{ Users }}</h4>
           <IconField iconPosition="left">
             <InputIcon>
               <i class="pi pi-search" />
@@ -267,12 +264,18 @@ export default {
           </IconField>
         </div>
       </template>
+      <template #loading> Loading customers data. Please wait. </template>
       <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column>
-      <Column field="tenantId" header="Tenant Id" sortable style="min-width: 12rem"></Column>
+      <Column field="id" header="ID" sortable style="min-width: 12rem"></Column>
+      <Column field="customer" header="Customer" sortable style="min-width: 16rem">
+        <template #body="slotProps">
+          {{ slotProps.data?.customer?.name }}
+        </template>
+      </Column>
       <Column field="name" header="Name" sortable style="min-width: 16rem"></Column>
+      <Column field="username" header="Username" sortable style="min-width: 16rem"></Column>
       <Column field="email" header="Email" sortable style="min-width: 16rem"></Column>
       <Column field="phoneNumber" header="Phone Number" sortable style="min-width: 16rem"></Column>
-      <Column field="vatNumber" header="VAT Number" sortable style="min-width: 8rem"></Column>
       <Column :exportable="false" style="min-width: 7rem">
         <template #body="slotProps">
           <Button
@@ -280,23 +283,23 @@ export default {
             outlined
             rounded
             class="mr-2"
-            @click="editCustomer(slotProps.data)"
+            @click="editUser(slotProps.data)"
           />
           <Button
             icon="pi pi-trash"
             outlined
             rounded
             severity="danger"
-            @click="confirmDeleteCustomer(slotProps.data)"
+            @click="confirmDeleteUser(slotProps.data)"
           />
         </template>
       </Column>
     </DataTable>
 
     <Dialog
-      v-model:visible="customerDialog"
+      v-model:visible="userDialog"
       :style="{ width: '450px' }"
-      header="Customer Details"
+      header="User Details"
       :modal="true"
       class="p-fluid"
     >
@@ -304,18 +307,26 @@ export default {
         <label for="name">Name</label>
         <InputText
           id="name"
-          v-model.trim="customer.name"
+          v-model.trim="user.name"
           required="true"
           autofocus
-          :invalid="submitted && !customer.name"
+          :invalid="submitted && !user.name"
         />
-        <small class="p-error" v-if="submitted && !customer.name">Name is required.</small>
+        <small class="p-error" v-if="submitted && !user.name">Name is required.</small>
+      </div>
+      <div class="field">
+        <label for="name">Username</label>
+        <InputText
+          id="name"
+          v-model.trim="user.username"
+          autofocus
+        />
       </div>
       <div class="field">
         <label for="name">Email</label>
         <InputText
           id="name"
-          v-model.trim="customer.email"
+          v-model.trim="user.email"
           autofocus
         />
       </div>
@@ -323,56 +334,48 @@ export default {
         <label for="name">Phone Number</label>
         <InputText
           id="name"
-          v-model.trim="customer.phoneNumber"
-          autofocus
-        />
-      </div>
-      <div class="field">
-        <label for="name">VAT Number</label>
-        <InputText
-          id="name"
-          v-model.trim="customer.vatNumber"
+          v-model.trim="user.phoneNumber"
           autofocus
         />
       </div>
       <template #footer>
         <Button label="Cancel" icon="pi pi-times" text @click="hideDialog" />
-        <Button label="Save" icon="pi pi-check" text @click="saveCustomer" />
+        <Button label="Save" icon="pi pi-check" text @click="saveUser" />
       </template>
     </Dialog>
 
     <Dialog
-      v-model:visible="deleteCustomerDialog"
+      v-model:visible="deleteUserDialog"
       :style="{ width: '450px' }"
       header="Confirm"
       :modal="true"
     >
       <div class="confirmation-content">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-        <span v-if="customer"
-          >Are you sure you want to delete <b>{{ customer.name }}</b
+        <span v-if="user"
+          >Are you sure you want to delete <b>{{ user.name }}</b
           >?</span
         >
       </div>
       <template #footer>
-        <Button label="No" icon="pi pi-times" text @click="deleteCustomerDialog = false" />
-        <Button label="Yes" icon="pi pi-check" text @click="deleteCustomer" />
+        <Button label="No" icon="pi pi-times" text @click="deleteUserDialog = false" />
+        <Button label="Yes" icon="pi pi-check" text @click="deleteUser" />
       </template>
     </Dialog>
 
     <Dialog
-      v-model:visible="deleteCustomersDialog"
+      v-model:visible="deleteUsersDialog"
       :style="{ width: '450px' }"
       header="Confirm"
       :modal="true"
     >
       <div class="confirmation-content">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-        <span v-if="customer">Are you sure you want to delete the selected customers?</span>
+        <span v-if="user">Are you sure you want to delete the selected users?</span>
       </div>
       <template #footer>
-        <Button label="No" icon="pi pi-times" text @click="deleteCustomersDialog = false" />
-        <Button label="Yes" icon="pi pi-check" text @click="deleteSelectedCustomers" />
+        <Button label="No" icon="pi pi-times" text @click="deleteUsersDialog = false" />
+        <Button label="Yes" icon="pi pi-check" text @click="deleteSelectedUsers" />
       </template>
     </Dialog>
   </div>

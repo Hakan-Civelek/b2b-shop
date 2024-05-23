@@ -22,8 +22,13 @@ export default {
       },
       {
         label: 'Customers',
-        icon: 'pi pi-fw pi-users',
+        icon: 'pi pi-fw pi-user',
         route: '/admin/customers'
+      },
+      {
+        label: 'Users',
+        icon: 'pi pi-fw pi-users',
+        route: '/admin/users'
       },
       {
         separator: true
