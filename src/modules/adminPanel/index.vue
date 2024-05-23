@@ -6,7 +6,10 @@ export default {
   },
   computed: {
     ...mapGetters('adminPanel', ['dashboardItems']),
-    ...mapState('app', ['user'])
+    ...mapState('app', ['user', 'isAdmin']),
+    role() {
+      return this.isAdmin ? 'Admin' : 'User'
+    }
   },
   methods: {
     ...mapActions('app', ['logout'])
@@ -59,8 +62,8 @@ export default {
               shape="circle"
             />
             <span class="inline-flex flex-column">
-              <span class="font-bold">{{ user.firstName + ' ' + user.lastName }}</span>
-              <span class="text-sm">Admin</span>
+              <span class="font-bold">{{ user.name }}</span>
+              <span class="text-sm">{{ role }}</span>
             </span>
           </button>
         </template>
