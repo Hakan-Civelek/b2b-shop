@@ -11,6 +11,9 @@ export default [
     path: '/',
     name: 'mainView',
     component: import('../modules/mainView/index.vue'),
+    beforeEnter: (to, from, next) => {
+      next('/products');
+    }
   },
   {
     path: '/products',
