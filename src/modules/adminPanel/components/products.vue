@@ -76,17 +76,14 @@ export default {
     saveProduct() {
       this.submitted = true
 
-      console.log(this.product);
-
       if (this.product?.name?.trim()) {
         if (this.product.id) {
           this.updateItem({
             url: `/product/${this.product.id}`,
             data: this.product
           })
-            .then(({ data }) => {
+            .then(() => {
               this.fetchData()
-              console.log(data);
             })
             .catch((error) => {
               this.$toast.add({
@@ -101,9 +98,8 @@ export default {
             url: '/product',
             data: this.product
           })
-            .then(({ data }) => {
+            .then(() => {
               this.fetchData()
-              console.log(data);
             })
             .catch((error) => {
               this.$toast.add({
@@ -128,15 +124,14 @@ export default {
       this.deleteProductDialog = true
     },
     deleteSelectedProducts() {
-      console.log(this.selectedProducts[0]);
       this.isLoading = true
 
       return this.deleteTableData({
         url: `/product/${this.selectedProducts[0].id}`,
       })
-        .then(({ data }) => {
-          // this.headers = response.meta.tableSettings
-          console.log(data);
+        .then(() => {
+          this.fetchData()
+          this.deleteProductsDialog = false;
         })
         .catch((error) => {
           this.$toast.add({
@@ -150,26 +145,6 @@ export default {
           this.isLoading = false
         })
     },
-    findIndexById(id) {
-      let index = -1
-      for (let i = 0; i < this.products.length; i++) {
-        if (this.products[i].id === id) {
-          index = i
-          break
-        }
-      }
-
-      return index
-    },
-    createId() {
-      let id = ''
-      var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-      for (var i = 0; i < 5; i++) {
-        id += chars.charAt(Math.floor(Math.random() * chars.length))
-      }
-
-      return id
-    },
     exportCSV() {
       this.$refs.dt.exportCSV()
     },
@@ -177,7 +152,6 @@ export default {
       this.deleteProductsDialog = true
     },
     deleteSelectedProductss() {
-      console.log(this.selectedProducts);
       this.products = this.products.filter((val) => !this.selectedProducts.includes(val))
       this.deleteProductsDialog = false
       this.selectedProducts = null
@@ -215,14 +189,27 @@ export default {
         formData.append('productId', this.product.id)
 
         this.uploadImage(formData)
-          .then((response) => {
-            console.log(response)
-          })
-          .catch((error) => {
-            console.log(error)
+          .then(({ data }) => {
+            this.product.images.push(
+              {
+                url: data[0],
+                isThumbnail: false
+              }
+            )
           })
       }
     },
+    selectMainPicture(index) {
+      this.product.images.forEach(image => {
+        image.isThumbnail = false;
+      });
+
+      const selectedImage = this.product.images[index];
+      selectedImage.isThumbnail = true;
+    },
+    getThumbnail(images) {
+      return images.find(image => image.isThumbnail) ? images.find(image => image.isThumbnail) : images[0];
+    }
   }
 }
 </script>
@@ -287,8 +274,9 @@ export default {
       <Column header="Image">
         <template #body="slotProps">
           <img
-            :src="slotProps.data.images[0].imageUrl"
-            :alt="slotProps.data.images[0].imageId"
+            v-if="slotProps.data.images.length"
+            :src="getThumbnail(slotProps.data.images)?.url"
+            :alt="getThumbnail(slotProps.data.images)?.id"
             class="border-round"
             style="width: 64px"
           />
@@ -347,11 +335,19 @@ export default {
       class="p-fluid"
     >
       <img
-        v-if="product.image"
-        :src="`https://primefaces.org/cdn/primevue/images/product/${product.image}`"
-        :alt="product.image"
-        class="block m-auto pb-3"
+        v-for="(image, index) in product.images"
+        :key="image.id"
+        :src="image.imageUrl ? image.imageUrl : image.url"
+        :alt="image.imageUrl"
+        width="75"
+        class="inline m-auto pb-3 mr-1 border-1 border-round"
+        :class="image.isThumbnail ? 'border-orange-500' : ''"
+        @click="selectMainPicture(index)"
       />
+      <div class="field">
+        <label for="image">Image</label>
+        <FileUpload mode="basic" name="demo[]" url="api/image" accept="image/*" customUpload @uploader="myUploader" :auto="true" :multiple="true" />
+      </div>
       <div class="field">
         <label for="code">Code</label>
         <InputText
@@ -398,11 +394,6 @@ export default {
         <label for="stock">Stock</label>
         <InputNumber id="stock" v-model="product.stock" integeronly />
       </div>
-
-      <!-- <div class="field">
-        <label for="image">Image</label>
-        <FileUpload mode="basic" name="demo[]" url="api/image" accept="image/*" customUpload @uploader="myUploader" :auto="true" />
-      </div> -->
 
       <div class="field">
         <label for="category">Category</label>
