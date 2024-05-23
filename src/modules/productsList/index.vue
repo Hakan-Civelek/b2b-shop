@@ -228,6 +228,9 @@ export default {
       } else {
         this.fetchProducts()
       }
+    },
+    getThumbnail(product) {
+      return product.images.find(image => image.isThumbnail) ? product.images.find(image => image.isThumbnail) : product.images[0]
     }
   }
 }
@@ -359,17 +362,11 @@ export default {
                   <div class="md:w-10rem relative">
                     <img
                       class="block xl:block mx-auto border-round w-full cursor-pointer"
-                      :src="item.thumbnail"
-                      :alt="item.title"
+                      :src="getThumbnail(item)?.url"
+                      :alt="getThumbnail(item)?.id"
                       style="height: 140px; object-fit: contain; cursor: pointer"
                       @click="goProductDetail(item)"
                     />
-                    <Tag
-                      :value="item.inventoryStatus"
-                      :severity="getSeverity(item)"
-                      class="absolute"
-                      style="left: 4px; top: 4px"
-                    ></Tag>
                   </div>
                   <div
                     class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4"
@@ -384,19 +381,6 @@ export default {
                           @click="goProductDetail(item)"
                         >
                           {{ item.name }}
-                        </div>
-                      </div>
-                      <div class="surface-100 p-1" style="border-radius: 30px">
-                        <div
-                          class="surface-0 flex align-items-center gap-2 justify-content-center py-1 px-2"
-                          style="
-                            border-radius: 30px;
-                            box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04),
-                              0px 1px 2px 0px rgba(0, 0, 0, 0.06);
-                          "
-                        >
-                          <span class="text-900 font-medium text-sm">{{ item.rating }}</span>
-                          <i class="pi pi-star-fill text-yellow-500"></i>
                         </div>
                       </div>
                     </div>
@@ -484,8 +468,8 @@ export default {
                     <div class="relative mx-auto cursor-pointer">
                       <img
                         class="border-round w-full"
-                        :src="item.thumbnail"
-                        :alt="item.name"
+                        :src="getThumbnail(item)?.url"
+                        :alt="getThumbnail(item)?.id"
                         style="width: 300px; height: 200px; object-fit: contain; cursor: pointer"
                       />
                       <Tag

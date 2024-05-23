@@ -60,8 +60,8 @@ export default {
                 <img
                   v-for="(item, index) in productDetails?.images"
                   :key="index"
-                  :src="item"
-                  :alt="item"
+                  :src="item.url"
+                  :alt="item.url"
                   :class="[
                     'h-5rem',
                     'object-contain',
@@ -78,8 +78,8 @@ export default {
               </div>
               <div class="pl-3 w-10 flex">
                 <img
-                  :src="selectedImage"
-                  :alt="selectedImage"
+                  :src="selectedImage.url"
+                  :alt="selectedImage.id"
                   class="w-full border-2 border-primary-100 border-round"
                   height="500"
                 />
@@ -96,7 +96,7 @@ export default {
               {{ productDetails?.category }}
             </div>
             <div class="flex align-items-center text-3xl font-bold text-900 mb-4">
-              {{ productDetails?.brand + ' ' + productDetails?.title }}
+              {{  productDetails?.name }}
             </div>
             <Divider />
             <div class="flex align-items-center text-lg font-medium text-500 mb-4">
@@ -104,7 +104,7 @@ export default {
             </div>
             <div class="flex align-items-center justify-content-between mb-5">
               <span class="text-900 font-medium text-3xl block">{{
-                '$' + productDetails?.price
+                '$' + productDetails?.salesPrice
               }}</span>
             </div>
             <div class="font-bold text-lg text-900 mb-3">Quantity</div>
@@ -138,7 +138,7 @@ export default {
                   class="flex-auto w-full white-space-nowrap"
                   @click="addProductBasket(productDetails)"
                 ></Button>
-                <Button icon="pi pi-heart" size="large" outlined></Button>
+                <!-- <Button icon="pi pi-heart" size="large" outlined></Button> -->
               </div>
             </div>
           </template>
