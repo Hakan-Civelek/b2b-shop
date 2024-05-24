@@ -11,18 +11,18 @@ export default {
         commit('setLoading', false);
       })
   },
-  fetchCategories({ commit }) {
-    return axios.get('/products/categories')
-      .then(({ data }) => {
-        const categories = data.map((category) => {
-          return {
-            name: category.charAt(0).toUpperCase() + category.slice(1),
-            value: category
-          }
-        })
-        commit('setCategories', categories);
-      })
-  },
+  // fetchCategories({ commit }) {
+  //   return axios.get('/products/categories')
+  //     .then(({ data }) => {
+  //       const categories = data.map((category) => {
+  //         return {
+  //           name: category.charAt(0).toUpperCase() + category.slice(1),
+  //           value: category
+  //         }
+  //       })
+  //       commit('setCategories', categories);
+  //     })
+  // },
   addBasket({ commit }, product) {
     return axios.post('/basket', product)
       .then(({ data }) => {
