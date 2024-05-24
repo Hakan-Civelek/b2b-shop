@@ -267,6 +267,11 @@ export default {
       <template #loading> Loading customers data. Please wait. </template>
       <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column>
       <Column field="id" header="ID" sortable style="min-width: 12rem"></Column>
+      <Column field="authorities" header="Authorities" sortable style="min-width: 16rem">
+        <template #body="slotProps">
+          {{ slotProps.data?.authorities?.map((authority) => authority).join(', ') }}
+        </template>
+      </Column>
       <Column field="customer" header="Customer" sortable style="min-width: 16rem">
         <template #body="slotProps">
           {{ slotProps.data?.customer?.name }}
