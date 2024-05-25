@@ -167,7 +167,7 @@ export default {
           size="large"
           class="cursor-pointer"
           rounded
-          @click="routePath('/cart')"
+          @click="routePath('/card')"
         />
         <Avatar
           icon="pi pi-user"

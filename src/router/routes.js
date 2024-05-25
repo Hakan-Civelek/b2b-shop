@@ -26,9 +26,9 @@ export default [
     component: () => import('../modules/productDetails/index.vue')
   },
   {
-    path: '/cart',
-    name: 'cart',
-    component: () => import('../modules/cart/index.vue')
+    path: '/card',
+    name: 'card',
+    component: () => import('../modules/card/index.vue'),
   },
   {
     path: '/profile',

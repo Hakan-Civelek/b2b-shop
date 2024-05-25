@@ -198,7 +198,8 @@ export default {
     ...mapState('productsList', ['products', 'loading', 'categories', 'totalProducts'])
   },
   methods: {
-    ...mapActions('productsList', ['fetchProducts', 'fetchCategories', 'addBasket']),
+    ...mapActions('productsList', ['fetchProducts', 'fetchCategories']),
+    ...mapActions('card', ['addBasket']),
     getSeverity(product) {
       switch (product.inventoryStatus) {
         case 'INSTOCK':
@@ -218,7 +219,12 @@ export default {
       this.$router.push(`/products/${product.id}`)
     },
     addProductBasket(product) {
-      this.addBasket(product).then(() => {
+      const basketItem = {
+        productId: product.id,
+        quantity: product.quantity,
+        updateQuantity: false
+      }
+      this.addBasket(basketItem).then(() => {
         this.showSuccessMessage('Product added to basket')
       })
     },
@@ -230,7 +236,7 @@ export default {
       }
     },
     getThumbnail(product) {
-      return product.images.find(image => image.isThumbnail) ? product.images.find(image => image.isThumbnail) : product.images[0]
+      return product.images.find(image => image.isThumbnail) ? product?.images?.find(image => image?.isThumbnail) : product?.images[0]
     }
   }
 }
@@ -472,12 +478,6 @@ export default {
                         :alt="getThumbnail(item)?.id"
                         style="width: 300px; height: 200px; object-fit: contain; cursor: pointer"
                       />
-                      <Tag
-                        :value="item.inventoryStatus"
-                        :severity="getSeverity(item)"
-                        class="absolute"
-                        style="left: 4px; top: 4px"
-                      ></Tag>
                     </div>
                   </div>
                   <div class="pt-4">
@@ -522,7 +522,7 @@ export default {
                         <Button
                           icon="pi pi-shopping-cart"
                           label="Buy Now"
-                          :disabled="item.inventoryStatus === 'OUTOFSTOCK'"
+                          :disabled="item.quantity === 0 || item.quantity === undefined"
                           class="flex-auto white-space-nowrap"
                           @click="addProductBasket(item)"
                         ></Button>

@@ -20,7 +20,7 @@ export default {
   },
   methods: {
     ...mapActions('productDetails', ['fetchProductDetails']),
-    ...mapActions('productsList', ['addBasket']),
+    ...mapActions('card', ['addBasket']),
     selectImage(index) {
       this.selectedIndex = index
     },
@@ -32,7 +32,11 @@ export default {
       })
     },
     addProductBasket(product) {
-      product = { ...product, quantity: this.quantity }
+      product = {
+        productId: this.productDetails.id,
+        quantity: this.quantity,
+        updateQuantity: false
+      }
       this.addBasket(product).then(() => {
         this.showSuccessMessage('Product added to basket')
       })
