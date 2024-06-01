@@ -3,6 +3,7 @@ import { mapActions } from 'vuex'
 import { FilterMatchMode } from 'primevue/api'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
+import ToastMixin from '@/mixins/toast.js'
 
 export default {
   name: 'Customers',
@@ -10,7 +11,7 @@ export default {
     return {
       customers: null,
       customerDialog: false,
-      deleteUserDialog: false,
+      deleteCustomerDialog: false,
       deleteCustomersDialog: false,
       customer: {},
       selectedCustomers: [],
@@ -24,6 +25,7 @@ export default {
     IconField,
     InputIcon
   },
+  mixins: [ToastMixin],
   created() {
     this.initFilters();
     this.fetchData();
@@ -32,21 +34,17 @@ export default {
     ...mapActions('managementTable', ['fetchTableDatas', 'deleteTableData', 'updateItem', 'addItem']),
     ...mapActions('adminPanel', ['uploadImage']),
     fetchData() {
+      this.isLoading = true
+
       return this.fetchTableDatas({
         url: '/customer'
       })
         .then(({ data }) => {
-          // this.headers = response.meta.tableSettings
           this.items = data
           this.total = data.length
         })
         .catch((error) => {
-          this.$toast.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error.message,
-            life: 3000
-          })
+          this.showErrorMessage(error.message)
         })
         .finally(() => {
           this.isLoading = false
@@ -70,23 +68,20 @@ export default {
       this.submitted = true
       console.log(this.customer);
       if (this.customer?.name?.trim()) {
-        if (this.customer.id) {
+        if (this.customer.tenantId) {
           this.updateItem({
-            url: `/customer/${this.customer.id}`,
+            url: `/customer/${this.customer.tenantId}`,
             data: this.customer
           })
             .then(() => {
+              this.showSuccessMessage('Customer updated successfully')
               this.fetchData()
             })
             .catch((error) => {
-              this.$toast.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: error.message,
-                life: 3000
-              })
+              this.showErrorMessage(error.message)
             })
         } else {
+          this.customer.isActive = true
           this.addItem({
             url: '/customer',
             data: this.customer
@@ -95,12 +90,7 @@ export default {
               this.fetchData()
             })
             .catch((error) => {
-              this.$toast.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: error.message,
-                life: 3000
-              })
+              this.showErrorMessage(error.message)
             })
         }
 
@@ -114,28 +104,25 @@ export default {
     },
     confirmDeleteUser(customer) {
       this.customer = customer
-      this.deleteUserDialog = true
+      this.deleteCustomerDialog = true
     },
     deleteSelectedCustomers() {
+      console.log(this.customer);
       this.isLoading = true
 
       return this.deleteTableData({
-        url: `/customer/${this.selectedCustomers[0].id}`,
+        url: `/customer/${this.customer.tenantId}`,
       })
-        .then(({ data }) => {
-          // this.headers = response.meta.tableSettings
-          console.log(data);
+        .then(() => {
+          this.fetchData()
         })
         .catch((error) => {
-          this.$toast.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error.message,
-            life: 3000
-          })
+          this.showErrorMessage(error.message)
         })
         .finally(() => {
           this.isLoading = false
+          this.deleteCustomerDialog = false
+          this.customer = {}
         })
     },
     findIndexById(id) {
@@ -209,22 +196,15 @@ export default {
       <template #start>
         <Button label="New" icon="pi pi-plus" severity="success" class="mr-2" @click="openNew" />
         <Button
-          class="mr-2"
-          label="Delete"
-          icon="pi pi-trash"
-          severity="danger"
-          @click="confirmDeleteSelected"
-          :disabled="!selectedCustomers || !selectedCustomers.length"
-        />
-        <Button
           icon="pi pi-refresh"
           severity="info"
           class="mr-2"
+          :loading="isLoading"
           @click="fetchData"
         />
       </template>
 
-      <template #end>
+      <!-- <template #end>
         <FileUpload
           mode="basic"
           accept="image/*"
@@ -234,15 +214,15 @@ export default {
           class="mr-2 inline-block"
         />
         <Button label="Export" icon="pi pi-upload" severity="help" @click="exportCSV($event)" />
-      </template>
+      </template> -->
     </Toolbar>
 
     <DataTable
-      ref="dt"
       :value="items"
       v-model:selection="selectedCustomers"
       size="small"
-      dataKey="id"
+      dataKey="tenantId"
+      selectionMode="single"
       :loading="isLoading"
       :paginator="true"
       :rows="10"
@@ -266,17 +246,22 @@ export default {
       </template>
       <template #loading> Loading customers data. Please wait. </template>
       <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column>
-      <Column field="tenantId" header="Tenant ID" sortable style="min-width: 12rem"></Column>
-      <Column field="shop" header="Shop" sortable style="min-width: 16rem">
+      <Column field="tenantId" header="Tenant ID" sortable></Column>
+      <Column field="shop" header="Shop" sortable>
         <template #body="slotProps">
           {{ slotProps.data?.shop?.name }}
         </template>
       </Column>
-      <Column field="name" header="Name" sortable style="min-width: 16rem"></Column>
-      <Column field="email" header="Email" sortable style="min-width: 16rem"></Column>
-      <Column field="phoneNumber" header="Phone Number" sortable style="min-width: 16rem"></Column>
-      <Column field="vatNumber" header="VAT Number" sortable style="min-width: 16rem"></Column>
-      <Column :exportable="false" style="min-width: 7rem">
+      <Column field="name" header="Name" sortable></Column>
+      <Column field="email" header="Email" sortable></Column>
+      <Column field="phoneNumber" header="Phone Number" sortable></Column>
+      <Column field="vatNumber" header="VAT Number" sortable></Column>
+      <Column field="active" header="Status" sortable>
+        <template #body="slotProps">
+          <Tag :value="slotProps.data.active ? 'Active' : 'Inactive'" :severity="getStatusLabel(slotProps.data.active ? 'Active' : 'Inactive')" />
+        </template>
+      </Column>
+      <Column :exportable="false" frozen alignFrozen="right" style="min-width: 7rem">
         <template #body="slotProps">
           <Button
             icon="pi pi-pencil"
@@ -338,6 +323,10 @@ export default {
           autofocus
         />
       </div>
+      <div class="field flex align-items-center">
+        <label for="active">Status</label>
+        <InputSwitch v-model="customer.active" class="ml-2 mb-2" />
+      </div>
       <template #footer>
         <Button label="Cancel" icon="pi pi-times" text @click="hideDialog" />
         <Button label="Save" icon="pi pi-check" text @click="saveUser" />
@@ -345,7 +334,7 @@ export default {
     </Dialog>
 
     <Dialog
-      v-model:visible="deleteUserDialog"
+      v-model:visible="deleteCustomerDialog"
       :style="{ width: '450px' }"
       header="Confirm"
       :modal="true"
@@ -358,8 +347,8 @@ export default {
         >
       </div>
       <template #footer>
-        <Button label="No" icon="pi pi-times" text @click="deleteUserDialog = false" />
-        <Button label="Yes" icon="pi pi-check" text @click="deleteUser" />
+        <Button label="No" icon="pi pi-times" text @click="deleteCustomerDialog = false" />
+        <Button label="Yes" icon="pi pi-check" text @click="deleteSelectedCustomers()" />
       </template>
     </Dialog>
 
