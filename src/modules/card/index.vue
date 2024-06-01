@@ -1,6 +1,7 @@
 <script>
 import { mapActions } from 'vuex'
 import addressDialog from '@/modules/profile/components/addressDialog.vue'
+import ToastMixin from '@/mixins/toast.js'
 
 export default {
     name: 'Card',
@@ -29,6 +30,7 @@ export default {
     components: {
       addressDialog,
     },
+    mixins: [ToastMixin],
     mounted() {
       this.getBasket()
       this.getAddresses()
@@ -71,7 +73,11 @@ export default {
           orderNote: this.orderNote,
         }
         this.createOrder(payload).then(() => {
+          this.showSuccessMessage('Order created successfully')
           this.getBasket()
+        })
+        .finally(() => {
+          this.$router.push('/orders')
         })
       },
       getAddresses() {

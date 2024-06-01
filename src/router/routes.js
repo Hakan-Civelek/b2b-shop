@@ -36,6 +36,11 @@ export default [
     component: () => import('../modules/profile/index.vue')
   },
   {
+    path: '/orders',
+    name: 'orders',
+    component: () => import('../modules/orders/index.vue')
+  },
+  {
     path: '/admin',
     name: 'AdminPanel',
     component: () => import('../modules/adminPanel/index.vue'),
