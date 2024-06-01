@@ -64,8 +64,9 @@ export default {
                 <img
                   v-for="(item, index) in productDetails?.images"
                   :key="index"
-                  :src="item.url"
-                  :alt="item.url"
+                  :src="item?.url"
+                  :onerror="this.src='https://placehold.co/600x400'"
+                  :alt="item?.url"
                   :class="[
                     'h-5rem',
                     'object-contain',
@@ -82,8 +83,9 @@ export default {
               </div>
               <div class="pl-3 w-10 flex">
                 <img
-                  :src="selectedImage.url"
-                  :alt="selectedImage.id"
+                  :src="selectedImage?.url"
+                  :alt="selectedImage?.id"
+                  :onerror="this.src='https://placehold.co/600x400'"
                   class="w-full border-2 border-primary-100 border-round"
                   height="500"
                 />

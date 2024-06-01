@@ -29,5 +29,11 @@ export default {
     }
       commit('setUser', data)
     })
-  }
+  },
+  fetchCountries() {
+    return axios.get('/country');
+  },
+  createAddress(_, address) {
+    return axios.post('/address', address);
+  },
 }

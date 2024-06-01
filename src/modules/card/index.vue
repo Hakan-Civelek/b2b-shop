@@ -1,12 +1,14 @@
 <script>
 import { mapActions } from 'vuex'
+import addressDialog from '@/modules/profile/components/addressDialog.vue'
+
 export default {
     name: 'Card',
     data() {
       return {
         items: [],
         loading: false,
-        shippingOptions: [
+        invoiceOptions: [
           { id: 1, name: 'Shipping Option 1' },
           { id: 2, name: 'Shipping Option 2' },
           { id: 3, name: 'Shipping Option 3' },
@@ -16,18 +18,27 @@ export default {
           { id: 2, name: 'Receiver Option 2' },
           { id: 3, name: 'Receiver Option 3' },
         ],
-        selectedShipping: null,
+        selectedInvoice: null,
         selectedReceiver: null,
+        orderNote: '',
+        basketId: null,
+        showAddressDialog: false,
+        addresses: [],
       }
+    },
+    components: {
+      addressDialog,
     },
     mounted() {
       this.getBasket()
+      this.getAddresses()
     },
     methods: {
-      ...mapActions('card', ['fetchBasket', 'addBasket', 'removeItemFromBasket']),
+      ...mapActions('card', ['fetchBasket', 'addBasket', 'removeItemFromBasket', 'createOrder', 'fetchAddresses']),
       getBasket() {
         this.fetchBasket().then(({ data }) => {
-          this.items = data.basketItems;
+          this.items = data;
+          this.basketId = data.id;
         })
       },
       getThumbnail(item) {
@@ -52,6 +63,22 @@ export default {
           this.getBasket()
         })
       },
+      createNewOrder() {
+        const payload = {
+          basketId: this.basketId,
+          invoiceAddressId: this.selectedInvoice,
+          receiverAddressId: this.selectedReceiver,
+          orderNote: this.orderNote,
+        }
+        this.createOrder(payload).then(() => {
+          this.getBasket()
+        })
+      },
+      getAddresses() {
+        this.fetchAddresses().then(({ data }) => {
+          this.addresses = data
+        })
+      },
     }
 }
 </script>
@@ -59,14 +86,14 @@ export default {
 <template>
   <div class="card p-0 mb-0 p-menu" style="height: calc(100vh - 143px)">
     <div class="flex border-round p-0 m-0 h-full">
-        <div class="w-8 font-bold p-8 flex flex-column">
+        <div class="w-8 font-bold px-8 pb-8 pt-5 flex flex-column">
           <div class="flex justify-content-between w-full mb-2">
             <h1>Shopping Card</h1>
-            <h1>3 Items</h1>
+            <h1>{{ items.basketItemCount }} Items</h1>
           </div>
           <Divider />
         <DataView
-          :value="items"
+          :value="items.basketItems"
           :rows="4"
           class="overflow-auto"
         >
@@ -161,55 +188,70 @@ export default {
           </template>
         </DataView>
         </div>
-        <div class="w-4 surface-100 border-round-right font-bold p-8 flex flex-column">
+        <div class="w-4 surface-100 border-round-right font-bold px-8 pb-8 pt-5 flex flex-column">
           <div class="flex justify-content-between w-full mb-2">
             <h1>Order Summary</h1>
           </div>
           <Divider />
-          <div class="flex justify-content-between w-full mb-2">
-            <h1>Shipping Address</h1>
+          <div class="flex justify-content-between w-full">
+            <h3>Invoice Address</h3>
+            <Button label="ADD NEW ADDRESS" class="p-button-primary text-xs h-3rem" @click="showAddressDialog = true"></Button>
           </div>
           <div class="flex justify-content-between w-full mb-2">
             <Dropdown
-              :options="shippingOptions"
-              optionLabel="name"
+              :options="addresses"
+              optionLabel="title"
               optionValue="id"
-              v-model="selectedShipping"
+              v-model="selectedInvoice"
               placeholder="Select Shipping"
               class="w-full"
             />
           </div>
-          <div class="flex justify-content-between w-full mb-2">
-            <h1>Receiver Address</h1>
+          <div class="flex justify-content-between w-full">
+            <h3>Receiver Address</h3>
           </div>
           <div class="flex justify-content-between w-full mb-2">
             <Dropdown
-              :options="receiverOptions"
-              optionLabel="name"
+              :options="addresses"
+              optionLabel="title"
               optionValue="id"
               v-model="selectedReceiver"
               placeholder="Select Receiver"
               class="w-full"
             />
           </div>
+          <div class="flex justify-content-between w-full mb-2">
+            <Textarea
+              v-model="orderNote"
+              placeholder="Order Note"
+              rows="4"
+              class="w-full"
+            />
+          </div>
           <Divider />
           <div class="flex justify-content-between w-full mb-2">
-            <h2>Subtotal</h2>
-            <h2>$ 0.00</h2>
+            <h3>Subtotal</h3>
+            <h3>$ {{ items.subTotal }}</h3>
           </div>
           <div class="flex justify-content-between w-full mb-2">
-            <h2>Total TAX</h2>
-            <h2>$ 0.00</h2>
+            <h3>Total TAX</h3>
+            <h3>$ {{ items.totalTax }}</h3>
           </div>
           <div class="flex justify-content-between w-full mb-2">
-            <h2>Total Amount</h2>
-            <h2>$ 1,200.00</h2>
+            <h3>Total Amount</h3>
+            <h3>$ {{ items.totalCost }}</h3>
           </div>
           <div class="flex justify-content-between w-full mb-2">
-            <Button label="Checkout" class="p-button-success w-full"></Button>
+            <Button
+              label="CREATE ORDER"
+              class="p-button-success text-xl w-full h-4rem"
+              @click="createNewOrder"
+            >
+            </Button>
           </div>
         </div>
     </div>
+    <addressDialog v-if="showAddressDialog" @close="showAddressDialog = false" @save="fetchAddresses" />
   </div>
 </template>
 

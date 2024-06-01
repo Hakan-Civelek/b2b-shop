@@ -12,5 +12,11 @@ export default {
   },
   cleanBasket() {
     return axios.post('/basket/cleanBasket');
+  },
+  createOrder(_, order) {
+    return axios.post('/order', order);
+  },
+  fetchAddresses() {
+    return axios.get('/address');
   }
 }
