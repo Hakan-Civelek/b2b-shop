@@ -21,12 +21,6 @@ export default {
              this.orders = data
             })
         },
-        onRowExpand(event) {
-            this.$toast.add({ severity: 'info', summary: 'Product Expanded', detail: event.data.name, life: 3000 });
-        },
-        onRowCollapse(event) {
-            this.$toast.add({ severity: 'success', summary: 'Product Collapsed', detail: event.data.name, life: 3000 });
-        },
         expandAll() {
             this.expandedRows = this.orders.reduce((acc, p) => (acc[p.orderId] = true) && acc, {});
         },
@@ -55,7 +49,7 @@ export default {
             }
         },
         getThumbnail(item) {
-          return item.images?.find(image => image.isThumbnail) ? item.images.find(image => image.isThumbnail) : ''
+          return item?.find(image => image.isThumbnail) ? item?.find(image => image.isThumbnail) : ''
         },
     }
 };
@@ -64,8 +58,7 @@ export default {
 
 <template>
     <div class="card">
-        <DataTable v-model:expandedRows="expandedRows" :value="orders" dataKey="orderId"
-                @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" tableStyle="min-width: 60rem">
+        <DataTable v-model:expandedRows="expandedRows" :value="orders" dataKey="orderId" tableStyle="min-width: 60rem">
             <template #header>
                 <div class="flex flex-wrap justify-content-end gap-2">
                     <Button text icon="pi pi-plus" label="Expand All" @click="expandAll" />
@@ -96,9 +89,8 @@ export default {
                 <div class="p-3">
                     <h5>Orders for {{ slotProps.data.name }}</h5>
                     <DataTable :value="slotProps.data.orderItems" >
-                        <Column field="id" header="Id" sortable></Column>
-                        <Column field="name" header="Name" sortable></Column>
-                        <Column header="Image">
+                        <Column field="id" header="Id" sortable class="w-1"></Column>
+                        <Column header="Image" class="w-1">
                           <template #body="slotProps">
                             <img
                               v-if="slotProps.data.images.length"
@@ -109,8 +101,9 @@ export default {
                             />
                           </template>
                         </Column>
-                        <Column field="quantity" header="Quantity" sortable></Column>
-                        <Column field="grossPrice" header="Gross Price" sortable>
+                        <Column field="name" header="Name" sortable class="w-2"></Column>
+                        <Column field="quantity" header="Quantity" sortable class="w-1"></Column>
+                        <Column field="grossPrice" header="Gross Price" sortable class="w-2">
                             <template #body="slotProps">
                                 {{ formatCurrency(slotProps.data.grossPrice) }}
                             </template>
