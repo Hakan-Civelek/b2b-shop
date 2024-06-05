@@ -64,7 +64,7 @@ export default {
     },
     openNew() {
       this.product = {
-        isActive: true,
+        active: true,
       }
       this.submitted = false
       this.productDialog = true
@@ -299,11 +299,11 @@ export default {
       </Column>
       <Column field="category" header="Category" sortable style="min-width: 10rem"></Column>
       <Column field="stock" header="Stock" sortable style="min-width: 8rem"></Column>
-      <Column field="isActive" header="Status" sortable style="min-width: 8rem">
+      <Column field="active" header="Status" sortable style="min-width: 8rem">
         <template #body="slotProps">
           <Tag
-            :value="slotProps.data.isActive ? 'Active' : 'Inactive'"
-            :severity="getStatusLabel(slotProps.data.isActive ? 'Active' : 'InActive')"
+            :value="slotProps.data.active ? 'Active' : 'Inactive'"
+            :severity="getStatusLabel(slotProps.data.active ? 'Active' : 'InActive')"
           />
         </template>
       </Column>
@@ -386,8 +386,8 @@ export default {
       </div>
 
       <div class="field">
-        <label for="isActive">Status</label>
-        <Checkbox id="isActive" v-model="product.isActive" binary />
+        <label for="active">Status</label>
+        <Checkbox id="active" v-model="product.active" binary />
       </div>
 
       <div class="field">
