@@ -31,16 +31,6 @@ export default {
           route: '/settings'
         },
         {
-          label: 'Admin',
-          icon: 'pi pi-user-plus',
-          route: '/admin',
-          command: () => {
-            if (this.isAdmin) this.routePath('/admin/dashboard')
-            else this.routePath('/products')
-          },
-          visible: this.isAdmin
-        },
-        {
           label: 'Logout',
           icon: 'pi pi-power-off',
           route: '/logout',

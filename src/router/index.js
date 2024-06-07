@@ -6,6 +6,9 @@ const router = createRouter({
 })
 
 const handleBeforeEach = (to, from, next) => {
+  console.log('to', to);
+  console.log('from', from);
+  console.log('next', next);
   const sessionId = localStorage.getItem('session_id')
   if (to.path === '/login') {
     if (sessionId) {
@@ -18,6 +21,12 @@ const handleBeforeEach = (to, from, next) => {
     next({ path: '/login' })
   } else if (to.meta.noLayout) {
     next()
+  } else if (to.meta.admin) {
+    if (sessionId) {
+      next('/admin/dashboard')
+    } else {
+      next({ path: '/login' })
+    }
   } else {
     if (sessionId) {
       next()

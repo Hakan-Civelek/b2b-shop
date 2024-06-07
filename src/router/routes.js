@@ -1,5 +1,3 @@
-import store from '@/store';
-
 export default [
   {
     path: '/login',
@@ -44,13 +42,6 @@ export default [
     path: '/admin',
     name: 'AdminPanel',
     component: () => import('../modules/adminPanel/index.vue'),
-    beforeEnter: (to, from, next) => {
-      if (store.state.app.isAdmin || store.state.app.isMaster) {
-        next()
-      } else {
-        next('/products')
-      }
-    },
     children: [
       {
         path: '/admin/dashboard',
