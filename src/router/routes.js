@@ -54,6 +54,11 @@ export default [
         component: () => import('../modules/adminPanel/components/products.vue')
       },
       {
+        path: '/admin/categories',
+        name: 'AdminCategories',
+        component: () => import('../modules/adminPanel/components/categories.vue')
+      },
+      {
         path: '/admin/orders',
         name: 'AdminOrders',
         component: () => import('../modules/adminPanel/components/orders.vue')

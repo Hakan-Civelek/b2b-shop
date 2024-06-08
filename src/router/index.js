@@ -6,9 +6,6 @@ const router = createRouter({
 })
 
 const handleBeforeEach = (to, from, next) => {
-  console.log('to', to);
-  console.log('from', from);
-  console.log('next', next);
   const sessionId = localStorage.getItem('session_id')
   if (to.path === '/login') {
     if (sessionId) {

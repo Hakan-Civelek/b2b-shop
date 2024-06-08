@@ -16,6 +16,11 @@ export default {
         route: '/admin/products'
       },
       {
+        label: 'Categories',
+        icon: 'pi pi-fw pi-th-large',
+        route: '/admin/categories'
+      },
+      {
         label: 'Orders',
         icon: 'pi pi-fw pi-shopping-cart',
         route: '/admin/orders'
