@@ -257,7 +257,7 @@ export default {
           </div>
         </div>
     </div>
-    <addressDialog v-if="showAddressDialog" @close="showAddressDialog = false" @save="fetchAddresses" />
+    <addressDialog v-if="showAddressDialog" @close="showAddressDialog = false" @save="getAddresses" />
   </div>
 </template>
 

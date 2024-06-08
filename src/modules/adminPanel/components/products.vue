@@ -289,7 +289,11 @@ export default {
           {{ slotProps.data.vatRate }}%
         </template>
       </Column>
-      <Column field="category" header="Category" sortable style="min-width: 10rem"></Column>
+      <Column field="category" header="Category" sortable style="min-width: 10rem">
+        <template #body="slotProps">
+          {{ slotProps.data.category?.name }}
+        </template>
+      </Column>
       <Column field="stock" header="Stock" sortable style="min-width: 6rem"></Column>
       <Column field="active" header="Status" sortable style="min-width: 6rem">
         <template #body="slotProps">
@@ -391,10 +395,9 @@ export default {
         <label for="category">Category</label>
         <Dropdown
           id="category"
-          v-model="product.categoryId"
+          v-model="product.category"
           :options="categories"
           optionLabel="name"
-          optionValue="id"
           placeholder="Select a Category"
         />
       </div>
