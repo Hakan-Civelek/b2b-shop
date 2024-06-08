@@ -4,7 +4,7 @@ export default {
   fetchProducts({ commit }, params) {
     commit('setLoading', true);
 
-    return axios.get(`/product${params ? `/category/${params}` : ''}`)
+    return axios.get(`/product${params ? `?categoryId=${params}` : ''}`)
       .then(({ data }) => {
         commit('setProducts', data);
         commit('setTotalProducts', data.total);
@@ -12,12 +12,12 @@ export default {
       })
   },
   fetchCategories({ commit }) {
-    return axios.get('/products/categories')
+    return axios.get('/category')
       .then(({ data }) => {
         const categories = data.map((category) => {
           return {
-            name: category.charAt(0).toUpperCase() + category.slice(1),
-            value: category
+            name: category.name,
+            value: category.id
           }
         })
         commit('setCategories', categories);

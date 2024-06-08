@@ -192,7 +192,7 @@ export default {
   mixins: [ToastMixin],
   created() {
     this.fetchProducts()
-    // this.fetchCategories()
+    this.fetchCategories()
   },
   computed: {
     ...mapState('productsList', ['products', 'loading', 'categories', 'totalProducts'])

@@ -208,7 +208,6 @@ export default {
         </div>
       </template>
       <template #loading> Loading users data. Please wait. </template>
-      <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column>
       <Column field="id" header="ID" sortable></Column>
       <Column field="authorities" header="Authorities" sortable>
         <template #body="slotProps">

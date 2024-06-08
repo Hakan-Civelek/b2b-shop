@@ -15,12 +15,8 @@ export default {
       selectedProducts: [],
       filters: {},
       submitted: false,
-      statuses: [
-        { label: 'INSTOCK', value: 'instock' },
-        { label: 'LOWSTOCK', value: 'lowstock' },
-        { label: 'OUTOFSTOCK', value: 'outofstock' }
-      ],
       items: [],
+      isLoading: false,
     }
   },
   components: {
@@ -30,6 +26,7 @@ export default {
   created() {
     this.initFilters();
     this.fetchData();
+    this.fetchCategories()
   },
   methods: {
     ...mapActions('managementTable', ['fetchTableDatas', 'deleteTableData', 'addItem', 'updateItem']),
@@ -41,7 +38,6 @@ export default {
         url: '/product'
       })
         .then(({ data }) => {
-          // this.headers = response.meta.tableSettings
           this.items = data
           this.total = data.length
         })
@@ -56,6 +52,33 @@ export default {
         .finally(() => {
           this.isLoading = false
         })
+    },
+    fetchCategories() {
+      return this.fetchTableDatas({
+        url: '/category'
+      })
+        .then(({ data }) => {
+          this.categories = this.formatCategories(data)
+        })
+        .catch((error) => {
+          this.showErrorMessage(error.message)
+        })
+    },
+    formatCategories(categories) {
+      let formatted = [];
+      categories.forEach(category => {
+        formatted.push({
+          name: category.name,
+          id: category.id
+        });
+
+        if (category.subCategories.length > 0) {
+          const subCategories = this.formatCategories(category.subCategories);
+          formatted = formatted.concat(subCategories);
+        }
+      });
+
+      return formatted;
     },
     formatCurrency(value) {
       if (value) return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
@@ -127,11 +150,11 @@ export default {
       this.isLoading = true
 
       return this.deleteTableData({
-        url: `/product/${this.selectedProducts[0].id}`,
+        url: `/product/${this.product.id}`,
       })
         .then(() => {
           this.fetchData()
-          this.deleteProductsDialog = false;
+          this.deleteProductDialog = false;
         })
         .catch((error) => {
           this.$toast.add({
@@ -144,23 +167,6 @@ export default {
         .finally(() => {
           this.isLoading = false
         })
-    },
-    exportCSV() {
-      this.$refs.dt.exportCSV()
-    },
-    confirmDeleteSelected() {
-      this.deleteProductsDialog = true
-    },
-    deleteSelectedProductss() {
-      this.products = this.products.filter((val) => !this.selectedProducts.includes(val))
-      this.deleteProductsDialog = false
-      this.selectedProducts = null
-      this.$toast.add({
-        severity: 'success',
-        summary: 'Successful',
-        detail: 'Products Deleted',
-        life: 3000
-      })
     },
     initFilters() {
       this.filters = {
@@ -220,29 +226,16 @@ export default {
       <template #start>
         <Button label="New" icon="pi pi-plus" severity="success" class="mr-2" @click="openNew" />
         <Button
-          label="Delete"
-          icon="pi pi-trash"
-          severity="danger"
-          @click="confirmDeleteSelected"
-          :disabled="!selectedProducts || !selectedProducts.length"
+          icon="pi pi-refresh"
+          severity="info"
+          class="mr-2"
+          :loading="isLoading"
+          @click="fetchData"
         />
-      </template>
-
-      <template #end>
-        <FileUpload
-          mode="basic"
-          accept="image/*"
-          :maxFileSize="1000000"
-          label="Import"
-          chooseLabel="Import"
-          class="mr-2 inline-block"
-        />
-        <Button label="Export" icon="pi pi-upload" severity="help" @click="exportCSV($event)" />
       </template>
     </Toolbar>
 
     <DataTable
-      ref="dt"
       :value="items"
       v-model:selection="selectedProducts"
       size="small"
@@ -267,10 +260,9 @@ export default {
           </IconField>
         </div>
       </template>
-      <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column>
-      <Column field="id" header="ID" sortable style="min-width: 12rem"></Column>
-      <Column field="code" header="Code" sortable style="min-width: 12rem"></Column>
-      <Column field="name" header="Name" sortable style="min-width: 16rem"></Column>
+      <Column field="id" header="ID" sortable style="min-width: 4rem"></Column>
+      <Column field="code" header="Code" sortable style="min-width: 10rem"></Column>
+      <Column field="name" header="Name" sortable style="min-width: 14rem"></Column>
       <Column header="Image">
         <template #body="slotProps">
           <img
@@ -282,24 +274,24 @@ export default {
           />
         </template>
       </Column>
-      <Column field="salesPrice" header="Sales Price" sortable style="min-width: 8rem">
+      <!-- <Column field="salesPrice" header="Sales Price" sortable style="min-width: 8rem">
         <template #body="slotProps">
           {{ formatCurrency(slotProps.data.salesPrice) }}
         </template>
-      </Column>
+      </Column> -->
       <Column field="grossPrice" header="Gross Price" sortable style="min-width: 8rem">
         <template #body="slotProps">
           {{ formatCurrency(slotProps.data.grossPrice) }}
         </template>
       </Column>
-      <Column field="vatRate" header="VAT Rate" sortable style="min-width: 8rem">
+      <Column field="vatRate" header="VAT Rate" sortable style="min-width: 6rem">
         <template #body="slotProps">
           {{ slotProps.data.vatRate }}%
         </template>
       </Column>
       <Column field="category" header="Category" sortable style="min-width: 10rem"></Column>
-      <Column field="stock" header="Stock" sortable style="min-width: 8rem"></Column>
-      <Column field="active" header="Status" sortable style="min-width: 8rem">
+      <Column field="stock" header="Stock" sortable style="min-width: 6rem"></Column>
+      <Column field="active" header="Status" sortable style="min-width: 6rem">
         <template #body="slotProps">
           <Tag
             :value="slotProps.data.active ? 'Active' : 'Inactive'"
@@ -399,10 +391,10 @@ export default {
         <label for="category">Category</label>
         <Dropdown
           id="category"
-          v-model="product.category"
+          v-model="product.categoryId"
           :options="categories"
           optionLabel="name"
-          optionValue="name"
+          optionValue="id"
           placeholder="Select a Category"
         />
       </div>
@@ -453,22 +445,6 @@ export default {
       </div>
       <template #footer>
         <Button label="No" icon="pi pi-times" text @click="deleteProductDialog = false" />
-        <Button label="Yes" icon="pi pi-check" text @click="deleteProduct" />
-      </template>
-    </Dialog>
-
-    <Dialog
-      v-model:visible="deleteProductsDialog"
-      :style="{ width: '450px' }"
-      header="Confirm"
-      :modal="true"
-    >
-      <div class="confirmation-content">
-        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-        <span v-if="product">Are you sure you want to delete the selected products?</span>
-      </div>
-      <template #footer>
-        <Button label="No" icon="pi pi-times" text @click="deleteProductsDialog = false" />
         <Button label="Yes" icon="pi pi-check" text @click="deleteSelectedProducts" />
       </template>
     </Dialog>

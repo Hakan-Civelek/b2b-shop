@@ -12,7 +12,6 @@ export default {
       customers: null,
       customerDialog: false,
       deleteCustomerDialog: false,
-      deleteCustomersDialog: false,
       customer: {},
       selectedCustomers: [],
       filters: {},
@@ -148,9 +147,6 @@ export default {
     exportCSV() {
       this.$refs.dt.exportCSV()
     },
-    confirmDeleteSelected() {
-      this.deleteCustomersDialog = true
-    },
     initFilters() {
       this.filters = {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -203,18 +199,6 @@ export default {
           @click="fetchData"
         />
       </template>
-
-      <!-- <template #end>
-        <FileUpload
-          mode="basic"
-          accept="image/*"
-          :maxFileSize="1000000"
-          label="Import"
-          chooseLabel="Import"
-          class="mr-2 inline-block"
-        />
-        <Button label="Export" icon="pi pi-upload" severity="help" @click="exportCSV($event)" />
-      </template> -->
     </Toolbar>
 
     <DataTable
@@ -222,7 +206,6 @@ export default {
       v-model:selection="selectedCustomers"
       size="small"
       dataKey="tenantId"
-      selectionMode="single"
       :loading="isLoading"
       :paginator="true"
       :rows="10"
@@ -245,7 +228,6 @@ export default {
         </div>
       </template>
       <template #loading> Loading customers data. Please wait. </template>
-      <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column>
       <Column field="tenantId" header="Tenant ID" sortable></Column>
       <Column field="shop" header="Shop" sortable>
         <template #body="slotProps">
@@ -349,22 +331,6 @@ export default {
       <template #footer>
         <Button label="No" icon="pi pi-times" text @click="deleteCustomerDialog = false" />
         <Button label="Yes" icon="pi pi-check" text @click="deleteSelectedCustomers()" />
-      </template>
-    </Dialog>
-
-    <Dialog
-      v-model:visible="deleteCustomersDialog"
-      :style="{ width: '450px' }"
-      header="Confirm"
-      :modal="true"
-    >
-      <div class="confirmation-content">
-        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-        <span v-if="customer">Are you sure you want to delete the selected customers?</span>
-      </div>
-      <template #footer>
-        <Button label="No" icon="pi pi-times" text @click="deleteCustomersDialog = false" />
-        <Button label="Yes" icon="pi pi-check" text @click="deleteSelectedCustomers" />
       </template>
     </Dialog>
   </div>
