@@ -20,6 +20,7 @@ export default {
       submitted: false,
       items: [],
       isLoading: false,
+      brands: [],
     }
   },
   components: {
@@ -62,6 +63,17 @@ export default {
       })
         .then(({ data }) => {
           this.categories = this.formatCategories(data)
+        })
+        .catch((error) => {
+          this.showErrorMessage(error.message)
+        })
+    },
+    fetchBrands() {
+      return this.fetchTableDatas({
+        url: '/brand'
+      })
+        .then(({ data }) => {
+          this.brands = data
         })
         .catch((error) => {
           this.showErrorMessage(error.message)
@@ -422,6 +434,16 @@ export default {
         <InputNumber id="stock" v-model="product.stock" integeronly />
       </div>
 
+      <div class="field">
+        <label for="brand">Brand</label>
+        <Dropdown
+          id="brand"
+          v-model="product.brand"
+          :options="brands"
+          optionLabel="name"
+          placeholder="Select a Brand"
+        />
+      </div>
       <div class="field">
         <label for="category">Category</label>
         <Dropdown

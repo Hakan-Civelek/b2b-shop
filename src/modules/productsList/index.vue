@@ -381,7 +381,7 @@ export default {
                       class="flex flex-row md:flex-column justify-content-between align-items-start gap-2"
                     >
                       <div>
-                        <span class="font-medium text-secondary text-sm">{{ item.brand }}</span>
+                        <span class="font-medium text-secondary text-sm">{{ item.brand.name }}</span>
                         <div
                           class="text-lg font-medium text-900 mt-2 cursor-pointer"
                           @click="goProductDetail(item)"
