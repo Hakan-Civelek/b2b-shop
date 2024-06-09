@@ -7,4 +7,10 @@ export default {
   getDashboardData() {
     return axios.get('/dashboard');
   },
+  fetchShop(_, id) {
+    return axios.get(`/shop/${id}`);
+  },
+  updateShop(_, data) {
+    return axios.put(`/shop/${data.id}`, data);
+  }
 }
