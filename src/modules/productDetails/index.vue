@@ -1,15 +1,18 @@
 
 <script>
 import { mapActions } from 'vuex'
+import ToastMixin from '@/mixins/toast.js'
 export default {
   data() {
     return {
       productDetails: {},
       isLoading: false,
       selectedIndex: 0,
-      quantity: 1
+      quantity: 1,
+      addToBasketLoading: false
     }
   },
+  mixins: [ToastMixin],
   computed: {
     selectedImage() {
       return this.productDetails?.images[this.selectedIndex]
@@ -32,6 +35,7 @@ export default {
       })
     },
     addProductBasket(product) {
+      this.addToBasketLoading = true
       product = {
         productId: this.productDetails.id,
         quantity: this.quantity,
@@ -39,6 +43,12 @@ export default {
       }
       this.addBasket(product).then(() => {
         this.showSuccessMessage('Product added to basket')
+      })
+      .catch(() => {
+        this.showErrorMessage('Product could not be added to basket')
+      })
+      .finally(() => {
+        this.addToBasketLoading = false
       })
     },
 
@@ -145,6 +155,7 @@ export default {
                   label="Add to Cart"
                   size="large"
                   class="flex-auto w-full white-space-nowrap"
+                  :loading="addToBasketLoading"
                   @click="addProductBasket(productDetails)"
                 ></Button>
                 <!-- <Button icon="pi pi-heart" size="large" outlined></Button> -->
