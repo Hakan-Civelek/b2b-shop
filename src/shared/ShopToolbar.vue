@@ -129,7 +129,6 @@ export default {
           aria-controls="overlay_tmenu"
           @click="toggle"
         />
-        {{ isAdmin ? 'Admin' : 'User' }}
         <Menu ref="menu" id="overlay_tmenu" :model="items" popup>
           <template #item="{ item, props }">
             <router-link v-slot="{ href, navigate }" :to="item.route" custom>

@@ -13,7 +13,7 @@ export default {
 
     return axios.get(`/product?${queryString}`).then(({ data }) => {
       commit('setProducts', data)
-      commit('setTotalProducts', data.total)
+      commit('setTotalProducts', data.length)
       commit('setLoading', false)
     })
   },
