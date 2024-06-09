@@ -31,6 +31,7 @@ export default {
     this.initFilters();
     this.fetchData();
     this.fetchCategories()
+    this.fetchBrands()
   },
   methods: {
     ...mapActions('managementTable', ['fetchTableDatas', 'deleteTableData', 'addItem', 'updateItem']),

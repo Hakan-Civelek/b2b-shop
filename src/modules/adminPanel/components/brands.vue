@@ -49,11 +49,6 @@ export default {
           this.isLoading = false
         })
     },
-    formatCurrency(value) {
-      if (value) return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
-
-      return
-    },
     openNew() {
       this.brand = {}
       this.submitted = false
@@ -63,7 +58,7 @@ export default {
       this.brandDialog = false
       this.submitted = false
     },
-    saveUser() {
+    saveBrand() {
       this.submitted = true
       console.log(this.brand);
       if (this.brand?.name?.trim()) {
@@ -97,11 +92,11 @@ export default {
         this.brand = {}
       }
     },
-    editUser(brand) {
+    editBrand(brand) {
       this.brand = { ...brand }
       this.brandDialog = true
     },
-    confirmDeleteUser(brand) {
+    confirmDeleteBrand(brand) {
       this.brand = brand
       this.deleteBrandDialog = true
     },
@@ -110,7 +105,7 @@ export default {
       this.isLoading = true
 
       return this.deleteTableData({
-        url: `/brand/${this.brand.tenantId}`,
+        url: `/brand/${this.brand.id}`,
       })
         .then(() => {
           this.fetchData()
@@ -124,64 +119,11 @@ export default {
           this.brand = {}
         })
     },
-    findIndexById(id) {
-      let index = -1
-      for (let i = 0; i < this.brands.length; i++) {
-        if (this.brands[i].id === id) {
-          index = i
-          break
-        }
-      }
-
-      return index
-    },
-    createId() {
-      let id = ''
-      var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-      for (var i = 0; i < 5; i++) {
-        id += chars.charAt(Math.floor(Math.random() * chars.length))
-      }
-
-      return id
-    },
-    exportCSV() {
-      this.$refs.dt.exportCSV()
-    },
     initFilters() {
       this.filters = {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS }
       }
     },
-    getStatusLabel(status) {
-      switch (status) {
-        case 'Active':
-          return 'success'
-
-        case 'Inactive':
-          return 'warning'
-
-        default:
-          return null
-      }
-    },
-    myUploader(event) {
-      const file = event.files[0]
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-      reader.onload = () => {
-        const formData = new FormData()
-        formData.append('file', file)
-        formData.append('brandId', this.brand.id)
-
-        this.uploadImage(formData)
-          .then((response) => {
-            console.log(response)
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-      }
-    }
   }
 }
 </script>
@@ -230,11 +172,6 @@ export default {
       <template #loading> Loading brands data. Please wait. </template>
       <Column field="id" header="ID" sortable></Column>
       <Column field="name" header="Name" sortable></Column>
-      <Column field="active" header="Status" sortable>
-        <template #body="slotProps">
-          <Tag :value="slotProps.data.active ? 'Active' : 'Inactive'" :severity="getStatusLabel(slotProps.data.active ? 'Active' : 'Inactive')" />
-        </template>
-      </Column>
       <Column :exportable="false" frozen alignFrozen="right" style="min-width: 7rem">
         <template #body="slotProps">
           <Button
@@ -242,14 +179,14 @@ export default {
             outlined
             rounded
             class="mr-2"
-            @click="editUser(slotProps.data)"
+            @click="editBrand(slotProps.data)"
           />
           <Button
             icon="pi pi-trash"
             outlined
             rounded
             severity="danger"
-            @click="confirmDeleteUser(slotProps.data)"
+            @click="confirmDeleteBrand(slotProps.data)"
           />
         </template>
       </Column>
@@ -258,7 +195,7 @@ export default {
     <Dialog
       v-model:visible="brandDialog"
       :style="{ width: '450px' }"
-      header="User Details"
+      header="Brand Details"
       :modal="true"
       class="p-fluid"
     >
@@ -273,13 +210,9 @@ export default {
         />
         <small class="p-error" v-if="submitted && !brand.name">Name is required.</small>
       </div>
-      <div class="field flex align-items-center">
-        <label for="active">Status</label>
-        <InputSwitch v-model="brand.active" class="ml-2 mb-2" />
-      </div>
       <template #footer>
         <Button label="Cancel" icon="pi pi-times" text @click="hideDialog" />
-        <Button label="Save" icon="pi pi-check" text @click="saveUser" />
+        <Button label="Save" icon="pi pi-check" text @click="saveBrand" />
       </template>
     </Dialog>
 
