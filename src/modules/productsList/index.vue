@@ -186,7 +186,7 @@ export default {
         priceRange: null,
         evoulotionRate: null,
         categories: null
-      },
+      }
     }
   },
   mixins: [ToastMixin],
@@ -236,7 +236,9 @@ export default {
       }
     },
     getThumbnail(product) {
-      return product.images.find(image => image.isThumbnail) ? product?.images?.find(image => image?.isThumbnail) : product?.images[0]
+      return product.images.find((image) => image.isThumbnail)
+        ? product?.images?.find((image) => image?.isThumbnail)
+        : product?.images[0]
     }
   }
 }
@@ -248,17 +250,17 @@ export default {
       <div class="card mb-0 p-3 sticky top-0 sidebar-height">
         <Skeleton v-if="loading" class="mb-2"></Skeleton>
         <template v-else>
-        <span class="text-sm font-bold text-600">{{ totalProducts }}</span>
-        <span class="text-sm text-700"> Products listed</span>
+          <span class="text-sm font-bold text-600">{{ totalProducts }}</span>
+          <span class="text-sm text-700"> Products listed</span>
         </template>
         <Divider />
         <h2 class="text-lg font-semibold text-700">Categories</h2>
         <Listbox
-        v-model="filters.categories"
-        :options="categories"
-        optionLabel="name"
-        class="w-full"
-        @change="filterProducts"
+          v-model="filters.categories"
+          :options="categories"
+          optionLabel="name"
+          class="w-full"
+          @change="filterProducts"
         />
         <Divider />
         <h2 class="text-lg font-semibold text-700">Brands</h2>
@@ -281,55 +283,6 @@ export default {
                 :value="option.value"
                 class="mr-3"
               />
-              <label :for="option.value" class="cursor-pointer">{{ option.label }}</label>
-            </div>
-          </template>
-        </Listbox>
-        <Divider />
-        <h2 class="text-lg font-semibold text-700">Price Range</h2>
-        <Listbox
-          v-model="selectedPriceRange"
-          :options="priceRange"
-          :modelValue="selectedPriceRange"
-          filter
-          optionLabel="label"
-          class="w-full"
-        >
-          <template #option="{ option }">
-            <div class="flex">
-              <RadioButton
-                v-model="option.selected"
-                :key="option.value"
-                :input-id="option.value"
-                :name="option.value"
-                :value="option.value"
-                class="mr-3"
-              />
-              <label :for="option.value" class="cursor-pointer">{{ option.label }}</label>
-            </div>
-          </template>
-        </Listbox>
-        <Divider />
-        <h2 class="text-lg font-semibold text-700">Evoulotion Rate</h2>
-        <Listbox
-          v-model="selectedEvoulotionRate"
-          :options="evoulotionRate"
-          :modelValue="selectedEvoulotionRate"
-          filter
-          optionLabel="label"
-          class="w-full"
-        >
-          <template #option="{ option }">
-            <div class="flex">
-              <RadioButton
-                v-model="option.selected"
-                :key="option.value"
-                :input-id="option.value"
-                :name="option.value"
-                :value="option.value"
-                class="mr-3"
-              />
-              <icon :class="option.icon" class="mr-3"></icon>
               <label :for="option.value" class="cursor-pointer">{{ option.label }}</label>
             </div>
           </template>
@@ -381,7 +334,9 @@ export default {
                       class="flex flex-row md:flex-column justify-content-between align-items-start gap-2"
                     >
                       <div>
-                        <span class="font-medium text-secondary text-sm">{{ item.brand.name }}</span>
+                        <span class="font-medium text-secondary text-sm">{{
+                          item.brand.name
+                        }}</span>
                         <div
                           class="text-lg font-medium text-900 mt-2 cursor-pointer"
                           @click="goProductDetail(item)"
@@ -393,25 +348,25 @@ export default {
                     <div class="flex flex-column md:align-items-end gap-5">
                       <span class="text-xl font-semibold text-900">${{ item.salesPrice }}</span>
                       <div class="flex flex-row-reverse md:flex-row gap-2">
-                      <div class="flex">
-                        <InputNumber
-                          v-model="item.quantity"
-                          inputId="horizontal-buttons"
-                          showButtons
-                          buttonLayout="horizontal"
-                          inputClass="sm:w-4rem h-3rem"
-                          :allowEmpty="false"
-                          :min="1"
-                          :max="item?.stock"
-                        >
-                          <template #incrementbuttonicon>
-                            <span class="pi pi-plus" />
-                          </template>
-                          <template #decrementbuttonicon>
-                            <span class="pi pi-minus" />
-                          </template>
-                        </InputNumber>
-                      </div>
+                        <div class="flex">
+                          <InputNumber
+                            v-model="item.quantity"
+                            inputId="horizontal-buttons"
+                            showButtons
+                            buttonLayout="horizontal"
+                            inputClass="sm:w-4rem h-3rem"
+                            :allowEmpty="false"
+                            :min="1"
+                            :max="item?.stock"
+                          >
+                            <template #incrementbuttonicon>
+                              <span class="pi pi-plus" />
+                            </template>
+                            <template #decrementbuttonicon>
+                              <span class="pi pi-minus" />
+                            </template>
+                          </InputNumber>
+                        </div>
                         <Button
                           icon="pi pi-shopping-cart"
                           label="Buy Now"
@@ -500,25 +455,25 @@ export default {
                     <div class="flex flex-column gap-4 mt-4">
                       <span class="text-2xl font-semibold text-900">${{ item.salesPrice }}</span>
                       <div class="flex gap-2">
-                      <div class="flex">
-                        <InputNumber
-                          v-model="item.quantity"
-                          inputId="horizontal-buttons"
-                          showButtons
-                          buttonLayout="horizontal"
-                          inputClass="sm:w-4rem h-3rem"
-                          :allowEmpty="false"
-                          :min="1"
-                          :max="item?.stock"
-                        >
-                          <template #incrementbuttonicon>
-                            <span class="pi pi-plus" />
-                          </template>
-                          <template #decrementbuttonicon>
-                            <span class="pi pi-minus" />
-                          </template>
-                        </InputNumber>
-                      </div>
+                        <div class="flex">
+                          <InputNumber
+                            v-model="item.quantity"
+                            inputId="horizontal-buttons"
+                            showButtons
+                            buttonLayout="horizontal"
+                            inputClass="sm:w-4rem h-3rem"
+                            :allowEmpty="false"
+                            :min="1"
+                            :max="item?.stock"
+                          >
+                            <template #incrementbuttonicon>
+                              <span class="pi pi-plus" />
+                            </template>
+                            <template #decrementbuttonicon>
+                              <span class="pi pi-minus" />
+                            </template>
+                          </InputNumber>
+                        </div>
                         <Button
                           icon="pi pi-shopping-cart"
                           label="Buy Now"

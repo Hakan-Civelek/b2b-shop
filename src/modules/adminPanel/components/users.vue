@@ -18,7 +18,7 @@ export default {
       submitted: false,
       items: [],
       isLoading: true,
-      customers: [],
+      customers: []
     }
   },
   components: {
@@ -27,11 +27,16 @@ export default {
   },
   mixins: [ToastMixin],
   created() {
-    this.initFilters();
-    this.fetchData();
+    this.initFilters()
+    this.fetchData()
   },
   methods: {
-    ...mapActions('managementTable', ['fetchTableDatas', 'deleteTableData', 'updateItem', 'addItem']),
+    ...mapActions('managementTable', [
+      'fetchTableDatas',
+      'deleteTableData',
+      'updateItem',
+      'addItem'
+    ]),
     ...mapActions('adminPanel', ['uploadImage']),
     fetchData() {
       this.isLoading = true
@@ -57,6 +62,7 @@ export default {
     openNew() {
       this.getCustomers()
       this.user = {}
+      this.user.active = true
       this.submitted = false
       this.userDialog = true
     },
@@ -66,7 +72,7 @@ export default {
     },
     saveUser() {
       this.submitted = true
-      console.log(this.user);
+      console.log(this.user)
       if (this.user?.name?.trim()) {
         if (this.user.id) {
           this.updateItem({
@@ -80,7 +86,7 @@ export default {
               this.showErrorMessage(error.message)
             })
         } else {
-        this.user.authorities = 'ROLE_CUSTOMER_USER';
+          this.user.authorities = 'ROLE_CUSTOMER_USER'
           this.addItem({
             url: '/user',
             data: this.user
@@ -108,10 +114,10 @@ export default {
     },
     deleteSelectedUsers() {
       this.isLoading = true
-      console.log(this.selectedUsers);
+      console.log(this.selectedUsers)
 
       return this.deleteTableData({
-        url: `/user/${this.user.id}`,
+        url: `/user/${this.user.id}`
       })
         .then(() => {
           this.showSuccessMessage('User deleted successfully')
@@ -151,7 +157,7 @@ export default {
           data.forEach((customer) => {
             this.customers.push({
               name: customer.name,
-              tenantId: customer.tenantId,
+              tenantId: customer.tenantId
             })
           })
         })
@@ -163,7 +169,7 @@ export default {
             life: 3000
           })
         })
-    },
+    }
   }
 }
 </script>
@@ -173,12 +179,7 @@ export default {
     <Toolbar class="mb-2">
       <template #start>
         <Button label="New" icon="pi pi-plus" severity="success" class="mr-2" @click="openNew" />
-        <Button
-          icon="pi pi-refresh"
-          severity="info"
-          class="mr-2"
-          @click="fetchData"
-        />
+        <Button icon="pi pi-refresh" severity="info" class="mr-2" @click="fetchData" />
       </template>
     </Toolbar>
 
@@ -231,7 +232,7 @@ export default {
           />
         </template>
       </Column>
-      <Column :exportable="false" frozen alignFrozen="right" >
+      <Column :exportable="false" frozen alignFrozen="right">
         <template #body="slotProps">
           <Button
             icon="pi pi-pencil"
@@ -283,35 +284,19 @@ export default {
       </div>
       <div class="field">
         <label for="name">Username</label>
-        <InputText
-          id="name"
-          v-model.trim="user.username"
-          autofocus
-        />
+        <InputText id="name" v-model.trim="user.username" autofocus />
       </div>
       <div v-if="!user.id" class="field">
         <label for="name">Password</label>
-        <InputText
-          id="name"
-          v-model.trim="user.password"
-          autofocus
-        />
+        <InputText id="name" v-model.trim="user.password" autofocus />
       </div>
       <div class="field">
         <label for="name">Email</label>
-        <InputText
-          id="name"
-          v-model.trim="user.email"
-          autofocus
-        />
+        <InputText id="name" v-model.trim="user.email" autofocus />
       </div>
       <div class="field">
         <label for="name">Phone Number</label>
-        <InputText
-          id="name"
-          v-model.trim="user.phoneNumber"
-          autofocus
-        />
+        <InputText id="name" v-model.trim="user.phoneNumber" autofocus />
       </div>
       <div class="field">
         <label for="active">Status</label>

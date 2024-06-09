@@ -17,7 +17,7 @@ export default {
       filters: {},
       submitted: false,
       items: [],
-      isLoading: true,
+      isLoading: true
     }
   },
   components: {
@@ -26,11 +26,16 @@ export default {
   },
   mixins: [ToastMixin],
   created() {
-    this.initFilters();
-    this.fetchData();
+    this.initFilters()
+    this.fetchData()
   },
   methods: {
-    ...mapActions('managementTable', ['fetchTableDatas', 'deleteTableData', 'updateItem', 'addItem']),
+    ...mapActions('managementTable', [
+      'fetchTableDatas',
+      'deleteTableData',
+      'updateItem',
+      'addItem'
+    ]),
     ...mapActions('adminPanel', ['uploadImage']),
     fetchData() {
       this.isLoading = true
@@ -56,6 +61,7 @@ export default {
     },
     openNew() {
       this.customer = {}
+      this.customer.active = true
       this.submitted = false
       this.customerDialog = true
     },
@@ -65,7 +71,7 @@ export default {
     },
     saveUser() {
       this.submitted = true
-      console.log(this.customer);
+      console.log(this.customer)
       if (this.customer?.name?.trim()) {
         if (this.customer.tenantId) {
           this.updateItem({
@@ -80,7 +86,6 @@ export default {
               this.showErrorMessage(error.message)
             })
         } else {
-          this.customer.isActive = true
           this.addItem({
             url: '/customer',
             data: this.customer
@@ -106,11 +111,11 @@ export default {
       this.deleteCustomerDialog = true
     },
     deleteSelectedCustomers() {
-      console.log(this.customer);
+      console.log(this.customer)
       this.isLoading = true
 
       return this.deleteTableData({
-        url: `/customer/${this.customer.tenantId}`,
+        url: `/customer/${this.customer.tenantId}`
       })
         .then(() => {
           this.fetchData()
@@ -240,7 +245,10 @@ export default {
       <Column field="vatNumber" header="VAT Number" sortable></Column>
       <Column field="active" header="Status" sortable>
         <template #body="slotProps">
-          <Tag :value="slotProps.data.active ? 'Active' : 'Inactive'" :severity="getStatusLabel(slotProps.data.active ? 'Active' : 'Inactive')" />
+          <Tag
+            :value="slotProps.data.active ? 'Active' : 'Inactive'"
+            :severity="getStatusLabel(slotProps.data.active ? 'Active' : 'Inactive')"
+          />
         </template>
       </Column>
       <Column :exportable="false" frozen alignFrozen="right" style="min-width: 7rem">
@@ -283,27 +291,15 @@ export default {
       </div>
       <div class="field">
         <label for="name">Email</label>
-        <InputText
-          id="name"
-          v-model.trim="customer.email"
-          autofocus
-        />
+        <InputText id="name" v-model.trim="customer.email" autofocus />
       </div>
       <div class="field">
         <label for="name">Phone Number</label>
-        <InputText
-          id="name"
-          v-model.trim="customer.phoneNumber"
-          autofocus
-        />
+        <InputText id="name" v-model.trim="customer.phoneNumber" autofocus />
       </div>
       <div class="field">
         <label for="name">VAT Number</label>
-        <InputText
-          id="name"
-          v-model.trim="customer.vatNumber"
-          autofocus
-        />
+        <InputText id="name" v-model.trim="customer.vatNumber" autofocus />
       </div>
       <div class="field flex align-items-center">
         <label for="active">Status</label>

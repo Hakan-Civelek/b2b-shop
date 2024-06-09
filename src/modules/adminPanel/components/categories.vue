@@ -18,13 +18,13 @@ export default {
       items: [],
       isLoading: true,
       expandedRows: {},
-      editingRows: [],
+      editingRows: []
     }
   },
   mixins: [ToastMixin],
   created() {
-    this.initFilters();
-    this.fetchData();
+    this.initFilters()
+    this.fetchData()
   },
   computed: {
     selectedSubCategories: {
@@ -34,10 +34,15 @@ export default {
       set(value) {
         this.category.subCategories = value
       }
-    },
+    }
   },
   methods: {
-    ...mapActions('managementTable', ['fetchTableDatas', 'deleteTableData', 'updateItem', 'addItem']),
+    ...mapActions('managementTable', [
+      'fetchTableDatas',
+      'deleteTableData',
+      'updateItem',
+      'addItem'
+    ]),
     ...mapActions('adminPanel', ['uploadImage']),
     fetchData() {
       this.isLoading = true
@@ -63,6 +68,7 @@ export default {
     },
     openNew() {
       this.category = {}
+      this.category.active = true
       this.submitted = false
       this.categoryDialog = true
     },
@@ -86,7 +92,6 @@ export default {
               this.showErrorMessage(error.message)
             })
         } else {
-          this.category.isActive = true
           this.addItem({
             url: '/category',
             data: this.category
@@ -112,11 +117,11 @@ export default {
       this.deleteCategoryDialog = true
     },
     deleteSelectedCategories() {
-      console.log(this.category);
+      console.log(this.category)
       this.isLoading = true
 
       return this.deleteTableData({
-        url: `/category/${this.category.id}`,
+        url: `/category/${this.category.id}`
       })
         .then(() => {
           this.fetchData()
@@ -169,11 +174,10 @@ export default {
       }
     },
     onRowEditSave(event) {
-      let { newData, index } = event;
-      console.log(event);
-      this.products[index] = newData;
-    },
-
+      let { newData, index } = event
+      console.log(event)
+      this.products[index] = newData
+    }
   }
 }
 </script>
@@ -193,48 +197,57 @@ export default {
       </template>
     </Toolbar>
 
-        <DataTable
-          v-model:expandedRows="expandedRows"
-          :value="items" dataKey="id" tableStyle="min-width: 60rem"
-         >
-            <template #header>
-                <div class="flex flex-wrap justify-content-end gap-2">
-                    <Button text icon="pi pi-plus" label="Expand All" @click="expandAll" />
-                    <Button text icon="pi pi-minus" label="Collapse All" @click="collapseAll" />
-                </div>
-            </template>
-            <Column expander style="width: 5rem" />
-            <Column field="id" header="ID">
-                </Column>
+    <DataTable
+      v-model:expandedRows="expandedRows"
+      :value="items"
+      dataKey="id"
+      tableStyle="min-width: 60rem"
+    >
+      <template #header>
+        <div class="flex flex-wrap justify-content-end gap-2">
+          <Button text icon="pi pi-plus" label="Expand All" @click="expandAll" />
+          <Button text icon="pi pi-minus" label="Collapse All" @click="collapseAll" />
+        </div>
+      </template>
+      <Column expander style="width: 5rem" />
+      <Column field="id" header="ID"> </Column>
+      <Column field="name" header="Category Name"></Column>
+      <Column header="Status">
+        <template #body="slotProps">
+          <Tag
+            :value="slotProps.data.isActive"
+            :severity="getStatusLabel(slotProps.data.isActive)"
+          />
+        </template>
+      </Column>
+      <Column header="Actions">
+        <template #body="slotProps">
+          <Button
+            icon="pi pi-trash"
+            class="p-button-rounded p-button-danger"
+            @click="confirmDeleteCategory(slotProps.data)"
+          />
+        </template>
+      </Column>
+      <template #expansion="slotProps">
+        <div class="p-3">
+          <h5>Sub Categories for {{ slotProps.data.name }}</h5>
+          <DataTable :value="slotProps.data.subCategories" dataKey="id">
+            <Column field="id" header="Id" sortable class="w-1"></Column>
             <Column field="name" header="Category Name"></Column>
-            <Column header="Status">
-                <template #body="slotProps">
-                    <Tag :value="slotProps.data.isActive" :severity="getStatusLabel(slotProps.data.isActive)" />
-                </template>
-            </Column>
             <Column header="Actions">
-                <template #body="slotProps">
-                    <Button icon="pi pi-trash" class="p-button-rounded p-button-danger" @click="confirmDeleteCategory(slotProps.data)" />
-                </template>
+              <template #body="slotProps">
+                <Button
+                  icon="pi pi-trash"
+                  class="p-button-rounded p-button-danger"
+                  @click="confirmDeleteCategory(slotProps.data)"
+                />
+              </template>
             </Column>
-            <template #expansion="slotProps">
-                <div class="p-3">
-                    <h5>Sub Categories for {{ slotProps.data.name }}</h5>
-                    <DataTable
-                      :value="slotProps.data.subCategories"
-                      dataKey="id"
-                    >
-                        <Column field="id" header="Id" sortable class="w-1"></Column>
-                        <Column field="name" header="Category Name"></Column>
-                        <Column header="Actions">
-                            <template #body="slotProps">
-                                <Button icon="pi pi-trash" class="p-button-rounded p-button-danger" @click="confirmDeleteCategory(slotProps.data)" />
-                            </template>
-                        </Column>
-                    </DataTable>
-                </div>
-            </template>
-        </DataTable>
+          </DataTable>
+        </div>
+      </template>
+    </DataTable>
 
     <Dialog
       v-model:visible="categoryDialog"

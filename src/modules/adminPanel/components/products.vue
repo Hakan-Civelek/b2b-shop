@@ -13,14 +13,14 @@ export default {
       deleteProductsDialog: false,
       product: {
         images: [],
-        active: true,
+        active: true
       },
       selectedProducts: [],
       filters: {},
       submitted: false,
       items: [],
       isLoading: false,
-      brands: [],
+      brands: []
     }
   },
   components: {
@@ -28,13 +28,18 @@ export default {
     InputIcon
   },
   created() {
-    this.initFilters();
-    this.fetchData();
+    this.initFilters()
+    this.fetchData()
     this.fetchCategories()
     this.fetchBrands()
   },
   methods: {
-    ...mapActions('managementTable', ['fetchTableDatas', 'deleteTableData', 'addItem', 'updateItem']),
+    ...mapActions('managementTable', [
+      'fetchTableDatas',
+      'deleteTableData',
+      'addItem',
+      'updateItem'
+    ]),
     ...mapActions('adminPanel', ['uploadImage']),
     fetchData() {
       this.isLoading = true
@@ -81,20 +86,20 @@ export default {
         })
     },
     formatCategories(categories) {
-      let formatted = [];
-      categories.forEach(category => {
+      let formatted = []
+      categories.forEach((category) => {
         formatted.push({
           name: category.name,
           id: category.id
-        });
+        })
 
         if (category.subCategories.length > 0) {
-          const subCategories = this.formatCategories(category.subCategories);
-          formatted = formatted.concat(subCategories);
+          const subCategories = this.formatCategories(category.subCategories)
+          formatted = formatted.concat(subCategories)
         }
-      });
+      })
 
-      return formatted;
+      return formatted
     },
     formatCurrency(value) {
       if (value) return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
@@ -103,7 +108,7 @@ export default {
     },
     openNew() {
       this.product = {
-        active: true,
+        active: true
       }
       this.submitted = false
       this.productDialog = true
@@ -166,11 +171,11 @@ export default {
       this.isLoading = true
 
       return this.deleteTableData({
-        url: `/product/${this.product.id}`,
+        url: `/product/${this.product.id}`
       })
         .then(() => {
           this.fetchData()
-          this.deleteProductDialog = false;
+          this.deleteProductDialog = false
         })
         .catch((error) => {
           this.$toast.add({
@@ -202,50 +207,63 @@ export default {
       }
     },
     myUploader(event) {
-      const file = event.files[0]
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-      reader.onload = () => {
-        const formData = new FormData()
-        formData.append('file', file)
-        formData.append('productId', this.product.id)
+      const files = event.files
+      const uploadPromises = []
 
-        this.uploadImage(formData)
-          .then(({ data }) => {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+
+        reader.onload = () => {
+          const formData = new FormData()
+          formData.append('file', file)
+          formData.append('productId', this.product.id)
+
+          const uploadPromise = this.uploadImage(formData).then(({ data }) => {
             if (!Array.isArray(this.product.images)) {
-            this.product.images = [];
-          }
+              this.product.images = []
+            }
 
-            this.product.images.push(
-              {
-                url: data[0],
-                isThumbnail: true
-              }
-            )
+            this.product.images.push({
+              url: data[0],
+              isThumbnail: this.product.images.length === 0
+            })
           })
+
+          uploadPromises.push(uploadPromise)
+        }
       }
+
+      Promise.all(uploadPromises)
+        .then(() => {
+          console.log('All images uploaded successfully')
+        })
+        .catch((error) => {
+          console.error('Error uploading images:', error)
+        })
     },
     selectMainPicture(index) {
-      this.product.images.forEach(image => {
-        image.isThumbnail = false;
-      });
+      this.product.images.forEach((image) => {
+        image.isThumbnail = false
+      })
 
-      const selectedImage = this.product.images[index];
-      selectedImage.isThumbnail = true;
+      const selectedImage = this.product.images[index]
+      selectedImage.isThumbnail = true
     },
     getThumbnail(images) {
-      return images.find(image => image.isThumbnail) ? images.find(image => image.isThumbnail) : images[0];
+      return images.find((image) => image.isThumbnail)
+        ? images.find((image) => image.isThumbnail)
+        : images[0]
     },
     calculateGrossPrice() {
-      const salesPrice = parseFloat(
-        String(this.product.salesPrice).replace(/[^\d.-]/g, '')
-      );
+      const salesPrice = parseFloat(String(this.product.salesPrice).replace(/[^\d.-]/g, ''))
 
       // Eğer salesPrice NaN değilse hesaplamayı yap
       if (!isNaN(salesPrice)) {
-        this.product.grossPrice = salesPrice * (1 + this.product.vatRate / 100);
+        this.product.grossPrice = salesPrice * (1 + this.product.vatRate / 100)
       } else {
-        console.error('Invalid sales price format');
+        console.error('Invalid sales price format')
       }
     },
     calculateSalesPrice() {
@@ -256,10 +274,10 @@ export default {
       // console.log('grossPrice', grossPrice);
 
       // Eğer grossPrice NaN değilse hesaplamayı yap
-        this.product.salesPrice = this.product.grossPrice * (1 + this.product.vatRate / 100);
-        this.product.salesPrice = parseFloat(this.product.salesPrice.toFixed(2));
-        console.log('salesPrice', this.product.salesPrice);
-    },
+      this.product.salesPrice = this.product.grossPrice * (1 + this.product.vatRate / 100)
+      this.product.salesPrice = parseFloat(this.product.salesPrice.toFixed(2))
+      console.log('salesPrice', this.product.salesPrice)
+    }
   }
 }
 </script>
@@ -329,9 +347,7 @@ export default {
         </template>
       </Column>
       <Column field="vatRate" header="VAT Rate" sortable style="min-width: 6rem">
-        <template #body="slotProps">
-          {{ slotProps.data.vatRate }}%
-        </template>
+        <template #body="slotProps"> {{ slotProps.data.vatRate }}% </template>
       </Column>
       <Column field="category" header="Category" sortable style="min-width: 10rem">
         <template #body="slotProps">
@@ -386,7 +402,16 @@ export default {
       />
       <div class="field">
         <label for="image">Image</label>
-        <FileUpload mode="basic" name="demo[]" url="api/image" accept="image/*" customUpload @uploader="myUploader" :auto="true" :multiple="true" />
+        <FileUpload
+          mode="basic"
+          name="demo[]"
+          url="api/image"
+          accept="image/*"
+          customUpload
+          @uploader="myUploader"
+          :auto="true"
+          :multiple="true"
+        />
       </div>
       <div class="field">
         <label for="code">Code</label>
@@ -472,7 +497,7 @@ export default {
             @blur="calculateSalesPrice"
           />
         </div>
-        {{product.salesPrice * (1 + product.vatRate / 100)}}
+        {{ product.salesPrice * (1 + product.vatRate / 100) }}
         <div class="field col">
           <label for="cost">Gross Price</label>
           <InputNumber
