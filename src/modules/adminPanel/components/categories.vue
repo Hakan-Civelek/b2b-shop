@@ -61,11 +61,6 @@ export default {
           this.isLoading = false
         })
     },
-    formatCurrency(value) {
-      if (value) return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
-
-      return
-    },
     openNew() {
       this.category = {}
       this.category.active = true
@@ -117,7 +112,6 @@ export default {
       this.deleteCategoryDialog = true
     },
     deleteSelectedCategories() {
-      console.log(this.category)
       this.isLoading = true
 
       return this.deleteTableData({
@@ -155,29 +149,6 @@ export default {
           return null
       }
     },
-    myUploader(event) {
-      const file = event.files[0]
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-      reader.onload = () => {
-        const formData = new FormData()
-        formData.append('file', file)
-        formData.append('categoryId', this.category.id)
-
-        this.uploadImage(formData)
-          .then((response) => {
-            console.log(response)
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-      }
-    },
-    onRowEditSave(event) {
-      let { newData, index } = event
-      console.log(event)
-      this.products[index] = newData
-    }
   }
 }
 </script>

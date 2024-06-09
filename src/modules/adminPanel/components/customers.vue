@@ -71,7 +71,6 @@ export default {
     },
     saveUser() {
       this.submitted = true
-      console.log(this.customer)
       if (this.customer?.name?.trim()) {
         if (this.customer.tenantId) {
           this.updateItem({
@@ -111,7 +110,6 @@ export default {
       this.deleteCustomerDialog = true
     },
     deleteSelectedCustomers() {
-      console.log(this.customer)
       this.isLoading = true
 
       return this.deleteTableData({

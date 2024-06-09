@@ -55,7 +55,6 @@ export default {
         })
       },
       updateProductBasket(item) {
-        console.log(item);
         const payload = {
           productId: item.productId,
           quantity: item.quantity,

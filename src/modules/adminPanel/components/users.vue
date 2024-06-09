@@ -72,7 +72,6 @@ export default {
     },
     saveUser() {
       this.submitted = true
-      console.log(this.user)
       if (this.user?.name?.trim()) {
         if (this.user.id) {
           this.updateItem({

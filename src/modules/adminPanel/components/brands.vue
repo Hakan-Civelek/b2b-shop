@@ -60,7 +60,6 @@ export default {
     },
     saveBrand() {
       this.submitted = true
-      console.log(this.brand);
       if (this.brand?.name?.trim()) {
         if (this.brand.tenantId) {
           this.updateItem({
@@ -101,7 +100,6 @@ export default {
       this.deleteBrandDialog = true
     },
     deleteSelectedBrands() {
-      console.log(this.brand);
       this.isLoading = true
 
       return this.deleteTableData({
