@@ -1,12 +1,27 @@
 <script>
 import ToastMixin from '@/mixins/toast.js'
+import { mapActions} from 'vuex'
 
 export default {
   data() {
     return {
+      items: [],
     }
   },
   mixins: [ToastMixin],
+  mounted() {
+    this.fetchData()
+  },
+  methods: {
+    ...mapActions('adminPanel', ['getDashboardData']),
+    fetchData() {
+      this.getDashboardData()
+        .then(({data}) => {
+          this.items = data
+          console.log(this.items);
+        })
+    },
+  },
 }
 </script>
 
@@ -18,7 +33,7 @@ export default {
           <div class="flex justify-content-between mb-3">
             <div>
               <span class="block text-500 font-medium mb-3">Orders</span>
-              <div class="text-900 font-medium text-xl">152</div>
+              <div class="text-900 font-medium text-xl">{{ items.orderCount }}</div>
             </div>
             <div
               class="flex align-items-center justify-content-center bg-blue-100 border-round"
@@ -27,8 +42,8 @@ export default {
               <i class="pi pi-shopping-cart text-blue-500 text-xl"></i>
             </div>
           </div>
-          <span class="text-green-500 font-medium">24 new </span>
-          <span class="text-500">since last visit</span>
+          <span class="text-green-500 font-medium">{{items.thisMonthOrderCount}} new </span>
+          <span class="text-500">since this month</span>
         </div>
       </div>
       <div class="col-12 md:col-6 lg:col-3">
@@ -36,7 +51,7 @@ export default {
           <div class="flex justify-content-between mb-3">
             <div>
               <span class="block text-500 font-medium mb-3">Revenue</span>
-              <div class="text-900 font-medium text-xl">$2.100</div>
+              <div class="text-900 font-medium text-xl">${{items.totalRevenue}}</div>
             </div>
             <div
               class="flex align-items-center justify-content-center bg-orange-100 border-round"
@@ -45,8 +60,8 @@ export default {
               <i class="pi pi-map-marker text-orange-500 text-xl"></i>
             </div>
           </div>
-          <span class="text-green-500 font-medium">%52+ </span>
-          <span class="text-500">since last week</span>
+          <span class="text-green-500 font-medium">${{items.thisMonthTotalRevenue}} </span>
+          <span class="text-500"> since this month</span>
         </div>
       </div>
       <div class="col-12 md:col-6 lg:col-3">
@@ -54,7 +69,7 @@ export default {
           <div class="flex justify-content-between mb-3">
             <div>
               <span class="block text-500 font-medium mb-3">Customers</span>
-              <div class="text-900 font-medium text-xl">28441</div>
+              <div class="text-900 font-medium text-xl">{{items.customerCount}}</div>
             </div>
             <div
               class="flex align-items-center justify-content-center bg-cyan-100 border-round"
@@ -63,8 +78,8 @@ export default {
               <i class="pi pi-inbox text-cyan-500 text-xl"></i>
             </div>
           </div>
-          <span class="text-green-500 font-medium">520 </span>
-          <span class="text-500">newly registered</span>
+          <span class="text-green-500 font-medium">{{items.thisMonthCustomerCount}} </span>
+          <span class="text-500"> newly registered this month</span>
         </div>
       </div>
       <div class="col-12 md:col-6 lg:col-3">
@@ -72,7 +87,7 @@ export default {
           <div class="flex justify-content-between mb-3">
             <div>
               <span class="block text-500 font-medium mb-3">Products</span>
-              <div class="text-900 font-medium text-xl">152</div>
+              <div class="text-900 font-medium text-xl">{{items.productCount}}</div>
             </div>
             <div
               class="flex align-items-center justify-content-center bg-purple-100 border-round"
@@ -81,8 +96,8 @@ export default {
               <i class="pi pi-shopping-bag text-purple-500 text-xl"></i>
             </div>
           </div>
-          <span class="text-green-500 font-medium">85 </span>
-          <span class="text-500">responded</span>
+          <span class="text-green-500 font-medium">{{items.thisMonthProductCount}} </span>
+          <span class="text-500"> added products this month</span>
         </div>
       </div>
     </div>
