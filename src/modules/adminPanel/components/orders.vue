@@ -136,6 +136,11 @@ export default {
         <Column expander style="width: 5rem" />
         <Column field="orderNumber" header="Order Number"></Column>
         <Column field="orderNote" header="Order Note"></Column>
+        <Column field="customer" header="Customer">
+            <template #body="slotProps">
+                {{ slotProps.data.customer?.name }}
+            </template>
+        </Column>
         <Column field="createdByName" header="Created By"></Column>
         <Column field="orderDate" header="Order Date">
           <template #body="slotProps">
