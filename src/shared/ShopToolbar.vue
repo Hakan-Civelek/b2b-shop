@@ -50,8 +50,12 @@ export default {
     ...mapState('app', ['isAdmin']),
     ...mapState('productsList', ['categories'])
   },
+  mounted() {
+    this.fetchCategories()
+  },
   methods: {
     ...mapActions('app', ['logout']),
+    ...mapActions('productsList', ['fetchCategories']),
     routePath(event) {
       this.$router.push(event)
     },

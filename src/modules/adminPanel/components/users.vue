@@ -113,7 +113,6 @@ export default {
     },
     deleteSelectedUsers() {
       this.isLoading = true
-      console.log(this.selectedUsers)
 
       return this.deleteTableData({
         url: `/user/${this.user.id}`

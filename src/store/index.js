@@ -6,6 +6,7 @@ import productsList from '../modules/productsList/store/index.js';
 import managementTable from '../shared/managementTable/store/index.js';
 import card from '../modules/card/store/index.js';
 import orders from '../modules/orders/store/index.js';
+import profile from '../modules/profile/store/index.js';
 
 export default createStore({
   state: {},
@@ -19,6 +20,7 @@ export default createStore({
     productDetails,
     managementTable,
     card,
-    orders
+    orders,
+    profile
   }
 })
