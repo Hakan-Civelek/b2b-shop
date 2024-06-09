@@ -59,10 +59,21 @@ export default {
             <Avatar
               :image="user.image"
               class="mr-2"
-              shape="circle"
-            />
+            >
+              <template #icon>
+                <i class="pi pi-user
+                  text-color
+                  text-2xl
+                  border-1
+                  border-round
+                  surface-border
+                  p-1
+                  bg-surface-100
+                "></i>
+              </template>
+            </Avatar>
             <span class="inline-flex flex-column">
-              <span class="font-bold">{{ user.name }}</span>
+              <span class="font-bold">{{ user.shop?.name }}</span>
               <span class="text-sm">{{ role }}</span>
             </span>
           </button>

@@ -301,6 +301,7 @@ export default {
       v-model:selection="selectedProducts"
       size="small"
       dataKey="id"
+      :loading="isLoading"
       :paginator="true"
       :rows="10"
       :filters="filters"

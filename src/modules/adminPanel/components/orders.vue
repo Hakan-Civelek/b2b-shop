@@ -121,6 +121,7 @@ export default {
       </Toolbar>
       <DataTable
         v-model:expandedRows="expandedRows"
+        :loading="isLoading"
         :value="orders"
         dataKey="orderId"
         tableStyle="min-width: 60rem"

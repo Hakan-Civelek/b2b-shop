@@ -170,6 +170,7 @@ export default {
 
     <DataTable
       v-model:expandedRows="expandedRows"
+      :loading="isLoading"
       :value="items"
       dataKey="id"
       tableStyle="min-width: 60rem"
