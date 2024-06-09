@@ -22,27 +22,23 @@ export default {
     this.fetchCategories()
     this.fetchBrands()
   },
+  watch: {
+    currentRoute() {
+      if (this.currentRoute) {
+      this.fetchProducts(this.currentRoute)
+      }
+    }
+  },
   computed: {
-    ...mapState('productsList', ['products', 'loading', 'categories', 'totalProducts', 'brands'])
+    ...mapState('productsList', ['products', 'loading', 'categories', 'totalProducts', 'brands']),
+    currentRoute() {
+
+      return this.$route.query;
+    },
   },
   methods: {
     ...mapActions('productsList', ['fetchProducts', 'fetchCategories', 'fetchBrands']),
     ...mapActions('card', ['addBasket']),
-    getSeverity(product) {
-      switch (product.inventoryStatus) {
-        case 'INSTOCK':
-          return 'success'
-
-        case 'LOWSTOCK':
-          return 'warning'
-
-        case 'OUTOFSTOCK':
-          return 'danger'
-
-        default:
-          return null
-      }
-    },
     goProductDetail(product) {
       this.$router.push(`/products/${product.id}`)
     },
