@@ -10,7 +10,6 @@ export default {
       categories: null,
       categoryDialog: false,
       deleteCategoryDialog: false,
-      deleteCategoriesDialog: false,
       category: {},
       selectedCategories: [],
       filters: {},
@@ -18,7 +17,8 @@ export default {
       items: [],
       isLoading: true,
       expandedRows: {},
-      editingRows: []
+      expandedSubRows: {},
+      editingRows: [],
     }
   },
   mixins: [ToastMixin],
@@ -129,9 +129,6 @@ export default {
           this.category = {}
         })
     },
-    confirmDeleteSelected() {
-      this.deleteCategoriesDialog = true
-    },
     initFilters() {
       this.filters = {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -148,6 +145,9 @@ export default {
         default:
           return null
       }
+    },
+    onGroupChange(event) {
+      this.category.parentCategory = event.value
     },
   }
 }
@@ -168,57 +168,78 @@ export default {
       </template>
     </Toolbar>
 
-    <DataTable
-      v-model:expandedRows="expandedRows"
-      :value="items"
-      dataKey="id"
-      tableStyle="min-width: 60rem"
-    >
-      <template #header>
-        <div class="flex flex-wrap justify-content-end gap-2">
-          <Button text icon="pi pi-plus" label="Expand All" @click="expandAll" />
-          <Button text icon="pi pi-minus" label="Collapse All" @click="collapseAll" />
-        </div>
+<DataTable
+    v-model:expandedRows="expandedRows"
+    :value="items"
+    dataKey="id"
+    tableStyle="min-width: 60rem"
+  >
+    <Column expander style="width: 5rem" />
+    <Column field="id" header="ID"> </Column>
+    <Column field="name" header="Category Name"></Column>
+    <Column header="Status">
+      <template #body="slotProps">
+        <Tag
+          :value="slotProps.data.isActive"
+          :severity="getStatusLabel(slotProps.data.isActive)"
+        />
       </template>
-      <Column expander style="width: 5rem" />
-      <Column field="id" header="ID"> </Column>
-      <Column field="name" header="Category Name"></Column>
-      <Column header="Status">
-        <template #body="slotProps">
-          <Tag
-            :value="slotProps.data.isActive"
-            :severity="getStatusLabel(slotProps.data.isActive)"
-          />
-        </template>
-      </Column>
-      <Column header="Actions">
-        <template #body="slotProps">
-          <Button
-            icon="pi pi-trash"
-            class="p-button-rounded p-button-danger"
-            @click="confirmDeleteCategory(slotProps.data)"
-          />
-        </template>
-      </Column>
-      <template #expansion="slotProps">
-        <div class="p-3">
-          <h5>Sub Categories for {{ slotProps.data.name }}</h5>
-          <DataTable :value="slotProps.data.subCategories" dataKey="id">
-            <Column field="id" header="Id" sortable class="w-1"></Column>
-            <Column field="name" header="Category Name"></Column>
-            <Column header="Actions">
-              <template #body="slotProps">
-                <Button
-                  icon="pi pi-trash"
-                  class="p-button-rounded p-button-danger"
-                  @click="confirmDeleteCategory(slotProps.data)"
-                />
-              </template>
-            </Column>
-          </DataTable>
-        </div>
+    </Column>
+    <Column header="Actions">
+      <template #body="slotProps">
+        <Button
+          icon="pi pi-trash"
+          class="p-button-rounded p-button-danger"
+          @click="confirmDeleteCategory(slotProps.data)"
+        />
       </template>
-    </DataTable>
+    </Column>
+    <template #expansion="slotProps">
+      <div class="p-3">
+        <h5>Sub Categories for {{ slotProps.data.name }}</h5>
+        <DataTable
+          v-model:expandedRows="expandedSubRows"
+          :value="slotProps.data.subCategories"
+          dataKey="id"
+        >
+          <Column expander style="width: 5rem" />
+          <Column field="id" header="Id" sortable class="w-1"></Column>
+          <Column field="name" header="Category Name"></Column>
+          <Column header="Actions">
+            <template #body="slotProps">
+              <Button
+                icon="pi pi-trash"
+                class="p-button-rounded p-button-danger"
+                @click="confirmDeleteCategory(slotProps.data)"
+              />
+            </template>
+          </Column>
+          <template #expansion="slotProps">
+            <div class="p-3">
+              <h5>Sub Categories for {{ slotProps.data.name }}</h5>
+              <DataTable
+                v-model:expandedRows="expandedSubSubRows"
+                :value="slotProps.data.subCategories"
+                dataKey="id"
+              >
+                <Column field="id" header="Id" sortable class="w-1"></Column>
+                <Column field="name" header="Category Name"></Column>
+                <Column header="Actions">
+                  <template #body="slotProps">
+                    <Button
+                      icon="pi pi-trash"
+                      class="p-button-rounded p-button-danger"
+                      @click="confirmDeleteCategory(slotProps.data)"
+                    />
+                  </template>
+                </Column>
+              </DataTable>
+            </div>
+          </template>
+        </DataTable>
+      </div>
+    </template>
+  </DataTable>
 
     <Dialog
       v-model:visible="categoryDialog"
@@ -240,17 +261,18 @@ export default {
       </div>
       <div class="field">
         <label for="name">Parent Category</label>
-        <Dropdown
-          v-model="category.parentCategoryId"
-          :invalid="submitted && !category.parentCategoryId"
+        <CascadeSelect
+          v-model="category.parentCategory"
           :options="items"
           optionLabel="name"
-          optionValue="id"
-          placeholder="Select a Parent Category"
+          optionGroupLabel="name"
+          :optionGroupChildren="['subCategories', 'subCategories']"
+          placeholder="Select a Category"
           autofocus
+          @group-change="onGroupChange"
         />
       </div>
-      <div class="field">
+      <!-- <div class="field">
         <label for="name">Sub Category</label>
         <MultiSelect
           v-model="selectedSubCategories"
@@ -260,7 +282,7 @@ export default {
           placeholder="Select a Sub Category"
           autofocus
         />
-      </div>
+      </div> -->
       <div class="field flex align-items-center">
         <label for="active">Status</label>
         <InputSwitch v-model="category.active" class="ml-2 mb-2" />
@@ -287,22 +309,6 @@ export default {
       <template #footer>
         <Button label="No" icon="pi pi-times" text @click="deleteCategoryDialog = false" />
         <Button label="Yes" icon="pi pi-check" text @click="deleteSelectedCategories()" />
-      </template>
-    </Dialog>
-
-    <Dialog
-      v-model:visible="deleteCategoriesDialog"
-      :style="{ width: '450px' }"
-      header="Confirm"
-      :modal="true"
-    >
-      <div class="confirmation-content">
-        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-        <span v-if="category">Are you sure you want to delete the selected categories?</span>
-      </div>
-      <template #footer>
-        <Button label="No" icon="pi pi-times" text @click="deleteCategoriesDialog = false" />
-        <Button label="Yes" icon="pi pi-check" text @click="deleteSelectedCategories" />
       </template>
     </Dialog>
   </div>

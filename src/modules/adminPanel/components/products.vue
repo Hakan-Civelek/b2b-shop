@@ -68,7 +68,7 @@ export default {
         url: '/category'
       })
         .then(({ data }) => {
-          this.categories = this.formatCategories(data)
+          this.categories = data
         })
         .catch((error) => {
           this.showErrorMessage(error.message)
@@ -85,21 +85,8 @@ export default {
           this.showErrorMessage(error.message)
         })
     },
-    formatCategories(categories) {
-      let formatted = []
-      categories.forEach((category) => {
-        formatted.push({
-          name: category.name,
-          id: category.id
-        })
-
-        if (category.subCategories.length > 0) {
-          const subCategories = this.formatCategories(category.subCategories)
-          formatted = formatted.concat(subCategories)
-        }
-      })
-
-      return formatted
+    onGroupChange(event) {
+      this.product.category = event.value
     },
     formatCurrency(value) {
       if (value) return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
@@ -396,6 +383,7 @@ export default {
         :src="image.imageUrl ? image.imageUrl : image.url"
         :alt="image.imageUrl"
         width="75"
+        height="75"
         class="inline m-auto pb-3 mr-1 border-1 border-round"
         :class="image.isThumbnail ? 'border-orange-500' : ''"
         @click="selectMainPicture(index)"
@@ -472,12 +460,16 @@ export default {
       </div>
       <div class="field">
         <label for="category">Category</label>
-        <Dropdown
-          id="category"
+        <CascadeSelect
           v-model="product.category"
+          id="category"
           :options="categories"
           optionLabel="name"
+          optionGroupLabel="name"
+          :optionGroupChildren="['subCategories', 'subCategories']"
           placeholder="Select a Category"
+          autofocus
+          @group-change="onGroupChange"
         />
       </div>
       <div class="field">
