@@ -39,33 +39,6 @@ export default {
           }
         }
       ],
-      categories: [
-        {
-          label: 'Electronics',
-          icon: 'pi pi-desktop',
-          route: '/products'
-        },
-        {
-          label: 'Furniture',
-          icon: 'pi pi-book',
-          route: '/products'
-        },
-        {
-          label: 'Clothing',
-          icon: 'pi pi-shopping-cart',
-          route: '/products'
-        },
-        {
-          label: 'Sports',
-          icon: 'pi pi-briefcase',
-          route: '/products'
-        },
-        {
-          label: 'Health',
-          icon: 'pi pi-heart',
-          route: '/products'
-        }
-      ],
       darkTheme: false
     }
   },
@@ -74,7 +47,8 @@ export default {
     InputIcon
   },
   computed: {
-    ...mapState('app', ['isAdmin'])
+    ...mapState('app', ['isAdmin']),
+    ...mapState('productsList', ['categories'])
   },
   methods: {
     ...mapActions('app', ['logout']),
@@ -100,33 +74,20 @@ export default {
   <Menubar :model="categories" class="mb-4 py-3 px-4">
     <template #start>
       <span class="inline-flex align-items-center gap-1 px-6 py-2">
-        <span class="font-medium text-4xl font-semibold"
+        <span class="font-medium text-4xl font-semibold cursor-pointer" @click="routePath('/products')"
           >B2B<span class="text-primary">SHOP</span></span
         >
       </span>
     </template>
-    <template #item="{ item, props, hasSubmenu, root }">
+    <template #item="{ item, props }">
       <a
         v-ripple
         class="flex align-items-center"
         v-bind="props.action"
-        @click="routePath(item.route)"
+        @click="routePath('/products?categoryId=' + item.value)"
       >
-        <span :class="item.icon" />
-        <span class="ml-2">{{ item.label }}</span>
-        <Badge v-if="item.badge" :class="{ 'ml-auto': !root, 'ml-2': root }" :value="item.badge" />
-        <span
-          v-if="item.shortcut"
-          class="ml-auto border-1 surface-border border-round surface-100 text-xs p-1"
-          >{{ item.shortcut }}</span
-        >
-        <i
-          v-if="hasSubmenu"
-          :class="[
-            'pi pi-angle-down',
-            { 'pi-angle-down ml-2': root, 'pi-angle-right ml-auto': !root }
-          ]"
-        ></i>
+        <!-- <span :class="item.icon" /> -->
+        <span class="ml-2">{{ item.name.toUpperCase() }}</span>
       </a>
     </template>
     <template #end>
