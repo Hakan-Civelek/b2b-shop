@@ -158,7 +158,7 @@ export default {
       }
     },
     editProduct(product) {
-      console.log('product', product);
+      console.log('product', product)
       delete product.category.parentCategory
       this.product = { ...product }
       this.productDialog = true
@@ -255,27 +255,13 @@ export default {
         ? images.find((image) => image.isThumbnail)
         : images[0]
     },
-    calculateGrossPrice() {
-      const salesPrice = parseFloat(String(this.product.salesPrice).replace(/[^\d.-]/g, ''))
-
-      // Eğer salesPrice NaN değilse hesaplamayı yap
-      if (!isNaN(salesPrice)) {
-        this.product.grossPrice = salesPrice * (1 + this.product.vatRate / 100)
-      } else {
-        console.error('Invalid sales price format')
-      }
+    calculateGrossPrice(salesPrice) {
+      let grossPrice = salesPrice * (1 + this.product.vatRate / 100)
+      this.product.grossPrice = grossPrice.toFixed(2)
     },
-    calculateSalesPrice() {
-      // grossPrice'i doğru formatta bir sayıya dönüştür
-      // const grossPrice = parseFloat(
-      //   String(this.product.grossPrice).replace(/[^\d.-]/g, '')
-      // );
-      // console.log('grossPrice', grossPrice);
-
-      // Eğer grossPrice NaN değilse hesaplamayı yap
-      this.product.salesPrice = this.product.grossPrice * (1 + this.product.vatRate / 100)
-      this.product.salesPrice = parseFloat(this.product.salesPrice.toFixed(2))
-      console.log('salesPrice', this.product.salesPrice)
+    calculateSalesPrice(grossPrice) {
+      let salesPrice = grossPrice / (1 + this.product.vatRate / 100)
+      this.product.salesPrice = salesPrice.toFixed(2)
     }
   }
 }
@@ -490,16 +476,15 @@ export default {
         <div class="field col">
           <label for="price">Sales Price</label>
           <InputNumber
+            v-model="product.salesPrice"
             :key="product.salesPrice"
             id="price"
-            v-model="product.salesPrice"
             mode="currency"
-            currency="TRY"
+            currency="USD"
             locale="tr-tr"
-            @blur="calculateSalesPrice"
+            @blur="calculateGrossPrice(product.salesPrice)"
           />
         </div>
-        {{ product.salesPrice * (1 + product.vatRate / 100) }}
         <div class="field col">
           <label for="cost">Gross Price</label>
           <InputNumber
@@ -507,9 +492,9 @@ export default {
             id="cost"
             v-model="product.grossPrice"
             mode="currency"
-            currency="TRY"
+            currency="USD"
             locale="tr-tr"
-            @blur="calculateGrossPrice"
+            @blur="calculateSalesPrice(product.grossPrice)"
           />
         </div>
       </div>
