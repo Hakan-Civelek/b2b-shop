@@ -1,4 +1,4 @@
-import axios from 'haxios';
+import axios from 'haxios'
 
 export const addTokenToRequest = (acc) => {
   const sessionId = window.localStorage.getItem('session_id')
@@ -16,9 +16,7 @@ export const handleResponseError = (error) => {
   }
 
   return Promise.reject(error)
-
 }
-
 ;(() => {
   axios.interceptors.request.use(addTokenToRequest, (err) => Promise.reject(err))
   axios.interceptors.response.use((res) => res, handleResponseError)

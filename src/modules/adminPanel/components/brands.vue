@@ -61,9 +61,9 @@ export default {
     saveBrand() {
       this.submitted = true
       if (this.brand?.name?.trim()) {
-        if (this.brand.tenantId) {
+        if (this.brand.id) {
           this.updateItem({
-            url: `/brand/${this.brand.tenantId}`,
+            url: `/brand/${this.brand.id}`,
             data: this.brand
           })
             .then(() => {
@@ -74,7 +74,6 @@ export default {
               this.showErrorMessage(error.message)
             })
         } else {
-          this.brand.isActive = true
           this.addItem({
             url: '/brand',
             data: this.brand

@@ -99,7 +99,10 @@ export default {
           </div>
           <template v-else>
             <div class="flex align-items-center text-2xl font-semibold text-gray-500 mb-4">
-              {{ productDetails?.category }}
+              {{ productDetails?.category?.name }}
+            </div>
+            <div class="flex align-items-center text-3xl font-bold text-900 mb-4">
+              {{ productDetails?.brand?.name }}
             </div>
             <div class="flex align-items-center text-3xl font-bold text-900 mb-4">
               {{  productDetails?.name }}

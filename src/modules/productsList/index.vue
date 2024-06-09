@@ -25,16 +25,15 @@ export default {
   watch: {
     currentRoute() {
       if (this.currentRoute) {
-      this.fetchProducts(this.currentRoute)
+        this.fetchProducts(this.currentRoute)
       }
     }
   },
   computed: {
     ...mapState('productsList', ['products', 'loading', 'categories', 'totalProducts', 'brands']),
     currentRoute() {
-
-      return this.$route.query;
-    },
+      return this.$route.query
+    }
   },
   methods: {
     ...mapActions('productsList', ['fetchProducts', 'fetchCategories', 'fetchBrands']),
@@ -55,17 +54,20 @@ export default {
     filterProducts() {
       let params = {}
       if (this.filters.categories) {
-        params.categoryId = this.filters.categories.value
+        params = { categoryId: [this.filters.categories.value] }
       }
       if (this.filters.brands) {
-        params.brandId = this.filters.brands.value
+        params.brandIds = this.filters.brands.map((brand) => brand.value)
       }
-        this.fetchProducts(params)
+      this.fetchProducts(params)
     },
     getThumbnail(product) {
       return product.images.find((image) => image.isThumbnail)
         ? product?.images?.find((image) => image?.isThumbnail)
         : product?.images[0]
+    },
+    truncate(text, length) {
+      return text.length > length ? text.substring(0, length) + '...' : text
     }
   }
 }
@@ -96,6 +98,7 @@ export default {
           :options="brands"
           :modelValue="filters.brands"
           filter
+          multiple
           optionLabel="name"
           class="w-full"
           @change="filterProducts"
@@ -167,7 +170,7 @@ export default {
                           class="text-lg font-medium text-900 mt-2 cursor-pointer"
                           @click="goProductDetail(item)"
                         >
-                          {{ item.name }}
+                          {{ truncate(item.name, 54) }}
                         </div>
                       </div>
                     </div>
@@ -268,13 +271,13 @@ export default {
                           class="text-lg font-bold text-900 mt-1 cursor-pointer"
                           @click="goProductDetail(item)"
                         >
-                          {{ item.brand }}
+                          {{ item.brand?.name }}
                         </div>
                         <div
                           class="text-lg font-medium text-900 mt-1 cursor-pointer"
                           @click="goProductDetail(item)"
                         >
-                          {{ item.name }}
+                          {{ truncate(item.name, 54) }}
                         </div>
                       </div>
                     </div>

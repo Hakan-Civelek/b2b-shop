@@ -5,9 +5,9 @@ export default {
   data() {
     return {
       credentials: {
-        username: 'esatuser',
-        password: 'pass',
-        tenantId: '7'
+        username: 'esatshop@mail.com',
+        password: 'password',
+        tenantId: '1'
       }
     }
   },

@@ -272,7 +272,7 @@ export default {
     <Dialog
       v-model:visible="customerDialog"
       :style="{ width: '450px' }"
-      header="User Details"
+      :header="customer.id ? 'Customer Details' : 'New Customer'"
       :modal="true"
       class="p-fluid"
     >

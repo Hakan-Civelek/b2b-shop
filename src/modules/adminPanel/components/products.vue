@@ -20,12 +20,23 @@ export default {
       submitted: false,
       items: [],
       isLoading: false,
-      brands: []
+      brands: [],
+      categories: []
     }
   },
   components: {
     IconField,
     InputIcon
+  },
+  computed: {
+    selectedCategory: {
+      get() {
+        return null
+      },
+      set(value) {
+        this.product.category = value
+      }
+    }
   },
   created() {
     this.initFilters()
@@ -147,6 +158,8 @@ export default {
       }
     },
     editProduct(product) {
+      console.log('product', product);
+      delete product.category.parentCategory
       this.product = { ...product }
       this.productDialog = true
     },
@@ -205,7 +218,6 @@ export default {
         reader.onload = () => {
           const formData = new FormData()
           formData.append('file', file)
-          formData.append('productId', this.product.id)
 
           const uploadPromise = this.uploadImage(formData).then(({ data }) => {
             if (!Array.isArray(this.product.images)) {
@@ -407,7 +419,6 @@ export default {
           id="code"
           v-model.trim="product.code"
           required="true"
-          autofocus
           :invalid="submitted && !product.code"
         />
         <small class="p-error" v-if="submitted && !product.code">Code is required.</small>
@@ -418,7 +429,6 @@ export default {
           id="name"
           v-model.trim="product.name"
           required="true"
-          autofocus
           :invalid="submitted && !product.name"
         />
         <small class="p-error" v-if="submitted && !product.name">Name is required.</small>
@@ -440,7 +450,7 @@ export default {
 
       <div class="field">
         <label for="active">Status</label>
-        <Checkbox id="active" v-model="product.active" binary />
+        <InputSwitch id="active" v-model="product.active" class="ml-2" />
       </div>
 
       <div class="field">
@@ -461,14 +471,13 @@ export default {
       <div class="field">
         <label for="category">Category</label>
         <CascadeSelect
-          v-model="product.category"
+          v-model="selectedCategory"
           id="category"
           :options="categories"
           optionLabel="name"
           optionGroupLabel="name"
           :optionGroupChildren="['subCategories', 'subCategories']"
           placeholder="Select a Category"
-          autofocus
           @group-change="onGroupChange"
         />
       </div>
