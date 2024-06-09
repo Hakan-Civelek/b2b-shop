@@ -49,9 +49,9 @@ export default {
         route: '/admin/profile'
       },
       {
-        label: 'Settings',
+        label: 'Shop Configuration',
         icon: 'pi pi-fw pi-cog',
-        route: '/admin/settings'
+        route: '/admin/configuration'
       },
       {
         label: 'Logout',

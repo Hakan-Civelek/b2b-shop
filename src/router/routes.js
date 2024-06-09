@@ -84,7 +84,7 @@ export default [
         component: () => import('../modules/adminPanel/components/profile.vue')
       },
       {
-        path: '/admin/settings',
+        path: '/admin/configuration',
         name: 'AdminSettings',
         component: () => import('../modules/adminPanel/components/settings.vue')
       }
