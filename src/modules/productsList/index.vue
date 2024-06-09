@@ -13,7 +13,8 @@ export default {
         priceRange: null,
         evoulotionRate: null,
         categories: null
-      }
+      },
+      addBasketLoading: false,
     }
   },
   mixins: [ToastMixin],
@@ -30,10 +31,10 @@ export default {
     }
   },
   computed: {
-    ...mapState('productsList', ['products', 'loading', 'categories', 'totalProducts', 'brands']),
+    ...mapState('productsList', ['filteredProducts', 'loading', 'categories', 'totalProducts', 'brands']),
     currentRoute() {
       return this.$route.query
-    }
+    },
   },
   methods: {
     ...mapActions('productsList', ['fetchProducts', 'fetchCategories', 'fetchBrands']),
@@ -42,6 +43,7 @@ export default {
       this.$router.push(`/products/${product.id}`)
     },
     addProductBasket(product) {
+      this.addBasketLoading = true
       const basketItem = {
         productId: product.id,
         quantity: product.quantity,
@@ -50,16 +52,28 @@ export default {
       this.addBasket(basketItem).then(() => {
         this.showSuccessMessage('Product added to basket')
       })
+      .catch(() => {
+        this.showErrorMessage('An error occurred while adding the product to the basket')
+      })
+      .finally(() => {
+        this.addBasketLoading = false
+      })
     },
-    filterProducts() {
+    filterProducts(node, removeCategory = false) {
+      if (!removeCategory) {
+        this.filters.categories = node
+      }
       let params = {}
       if (this.filters.categories) {
-        params = { categoryId: [this.filters.categories.value] }
+        params = { categoryId: [this.filters.categories.key] }
       }
       if (this.filters.brands) {
         params.brandIds = this.filters.brands.map((brand) => brand.value)
       }
       this.fetchProducts(params)
+    },
+    removeFilter() {
+      this.fetchProducts()
     },
     getThumbnail(product) {
       return product.images.find((image) => image.isThumbnail)
@@ -68,6 +82,20 @@ export default {
     },
     truncate(text, length) {
       return text.length > length ? text.substring(0, length) + '...' : text
+    },
+    formatCategories(categories) {
+      return categories.map((category) => ({
+        key: category.id,
+        label: category.name,
+        children: category.subCategories.map((child) => ({
+          key: child.id,
+          label: child.name,
+          children: child.subCategories.map((subChild) => ({
+            key: subChild.id,
+            label: subChild.name
+          }))
+        }))
+      }))
     }
   }
 }
@@ -84,12 +112,14 @@ export default {
         </template>
         <Divider />
         <h2 class="text-lg font-semibold text-700">Categories</h2>
-        <Listbox
-          v-model="filters.categories"
-          :options="categories"
-          optionLabel="name"
-          class="w-full"
-          @change="filterProducts"
+        <Tree
+          v-model:selectionKeys="filters.categories"
+          :value="formatCategories(categories)"
+          scrollHeight="250px"
+          selectionMode="single"
+          selectionKeys="value"
+          @nodeSelect="filterProducts"
+          @nodeUnselect="filterProducts($event, true)"
         />
         <Divider />
         <h2 class="text-lg font-semibold text-700">Brands</h2>
@@ -121,21 +151,15 @@ export default {
     <div class="col">
       <div class="card mb-0 h-full">
         <DataView
-          :value="products"
+          ref="productsList"
+          :value="filteredProducts"
           :layout="layout"
           :sortOrder="sortOrder"
           :sortField="sortField"
           :rows="4"
         >
           <template #header>
-            <div class="flex justify-content-between">
-              <Dropdown
-                v-model="sortKey"
-                :options="sortOptions"
-                optionLabel="label"
-                placeholder="Sort By Price"
-                @change="onSortChange($event)"
-              />
+            <div class="flex justify-content-end">
               <DataViewLayoutOptions v-model="layout" />
             </div>
           </template>
@@ -170,7 +194,7 @@ export default {
                           class="text-lg font-medium text-900 mt-2 cursor-pointer"
                           @click="goProductDetail(item)"
                         >
-                          {{ truncate(item.name, 54) }}
+                          {{ truncate(item.name, 50) }}
                         </div>
                       </div>
                     </div>
@@ -198,8 +222,8 @@ export default {
                         </div>
                         <Button
                           icon="pi pi-shopping-cart"
-                          label="Buy Now"
-                          :disabled="item.inventoryStatus === 'OUTOFSTOCK'"
+                          label="Add"
+                          :disabled="item.quantity === 0 || item.quantity === undefined"
                           class="flex-auto md:flex-initial white-space-nowrap"
                           @click="addProductBasket(item)"
                         ></Button>
@@ -277,7 +301,7 @@ export default {
                           class="text-lg font-medium text-900 mt-1 cursor-pointer"
                           @click="goProductDetail(item)"
                         >
-                          {{ truncate(item.name, 54) }}
+                          {{ truncate(item.name, 50) }}
                         </div>
                       </div>
                     </div>
@@ -305,8 +329,9 @@ export default {
                         </div>
                         <Button
                           icon="pi pi-shopping-cart"
-                          label="Buy Now"
+                          label="Add"
                           :disabled="item.quantity === 0 || item.quantity === undefined"
+                          :loading="addBasketLoading"
                           class="flex-auto white-space-nowrap"
                           @click="addProductBasket(item)"
                         ></Button>

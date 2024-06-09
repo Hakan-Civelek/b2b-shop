@@ -4,5 +4,6 @@ export default {
   categories: [],
   totalProducts: 0,
   basket: [],
-  brands: []
+  brands: [],
+  filteredProducts: []
 }

@@ -1,5 +1,6 @@
 <script>
 import { mapActions, mapState } from 'vuex'
+import { FilterMatchMode } from 'primevue/api'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
 
@@ -11,9 +12,6 @@ export default {
           label: 'Profile',
           icon: 'pi pi-home',
           route: '/profile',
-          command: () => {
-            this.routePath('/profile')
-          }
         },
         {
           label: 'Products',
@@ -26,11 +24,6 @@ export default {
           route: '/orders'
         },
         {
-          label: 'Settings',
-          icon: 'pi pi-cog',
-          route: '/settings'
-        },
-        {
           label: 'Logout',
           icon: 'pi pi-power-off',
           route: '/logout',
@@ -39,7 +32,8 @@ export default {
           }
         }
       ],
-      darkTheme: false
+      darkTheme: false,
+      searchQuery: '',
     }
   },
   components: {
@@ -50,12 +44,15 @@ export default {
     ...mapState('app', ['isAdmin']),
     ...mapState('productsList', ['categories'])
   },
+  created() {
+    this.initFilters()
+  },
   mounted() {
     this.fetchCategories()
   },
   methods: {
     ...mapActions('app', ['logout']),
-    ...mapActions('productsList', ['fetchCategories']),
+    ...mapActions('productsList', ['fetchCategories', 'filterProducts']),
     routePath(event) {
       this.$router.push(event)
     },
@@ -69,6 +66,14 @@ export default {
     },
     toggle(event) {
       this.$refs.menu.toggle(event)
+    },
+    initFilters() {
+      this.filters = {
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+      }
+    },
+    onSearch() {
+      this.filterProducts(this.searchQuery);
     }
   }
 }
@@ -83,22 +88,12 @@ export default {
         >
       </span>
     </template>
-    <template #item="{ item, props }">
-      <a
-        v-ripple
-        class="flex align-items-center"
-        v-bind="props.action"
-        @click="routePath('/products?categoryId=' + item.value)"
-      >
-        <!-- <span :class="item.icon" /> -->
-        <span class="ml-2">{{ item.name.toUpperCase() }}</span>
-      </a>
-    </template>
+
     <template #end>
       <div class="flex align-items-center gap-4">
         <IconField iconPosition="left">
           <InputIcon class="pi pi-search"> </InputIcon>
-          <InputText class="h-3rem" placeholder="Search" />
+          <InputText v-model="searchQuery" class="h-3rem" placeholder="Search" @input="onSearch" />
         </IconField>
         <Button
           v-if="!darkTheme"

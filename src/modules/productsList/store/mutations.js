@@ -17,4 +17,7 @@ export default {
   setBrands(state, value) {
     state.brands = value
   },
+  setFilteredProducts(state, value) {
+    state.filteredProducts = value
+  }
 }

@@ -12,6 +12,7 @@ export default {
     }
 
     return axios.get(`/product?${queryString}`).then(({ data }) => {
+      commit('setFilteredProducts', data)
       commit('setProducts', data)
       commit('setTotalProducts', data.length)
       commit('setLoading', false)
@@ -21,8 +22,8 @@ export default {
     return axios.get('/category').then(({ data }) => {
       const categories = data.map((category) => {
         return {
-          name: category.name,
-          value: category.id
+          value: category.id,
+          ...category
         }
       })
       commit('setCategories', categories)
@@ -32,11 +33,20 @@ export default {
     return axios.get('/brand').then(({ data }) => {
       const brands = data.map((brand) => {
         return {
-          name: brand.name,
-          value: brand.id
+          value: brand.id,
+          ...brand
         }
       })
       commit('setBrands', brands)
     })
+  },
+  filterProducts({commit, state}, query) {
+    const lowerCaseQuery = query.toLowerCase();
+    const filtered = state.products.filter(product =>
+      product.name.toLowerCase().includes(lowerCaseQuery) ||
+      (product.brand && product.brand.name.toLowerCase().includes(lowerCaseQuery)) ||
+      (product.category && product.category.name.toLowerCase().includes(lowerCaseQuery))
+    );
+    commit('setFilteredProducts', filtered);
   }
 }

@@ -65,6 +65,7 @@ export default {
         })
       },
       createNewOrder() {
+        this.loading = true
         const payload = {
           basketId: this.basketId,
           invoiceAddressId: this.selectedInvoice,
@@ -72,6 +73,7 @@ export default {
           orderNote: this.orderNote,
         }
         this.createOrder(payload).then(() => {
+          this.loading = false
           this.showSuccessMessage('Order created successfully')
           this.getBasket()
         })
@@ -82,6 +84,7 @@ export default {
       getAddresses() {
         this.fetchAddresses().then(({ data }) => {
           this.addresses = data
+          this.showAddressDialog = false
         })
       },
     }
@@ -250,6 +253,7 @@ export default {
             <Button
               label="CREATE ORDER"
               class="p-button-success text-xl w-full h-4rem"
+              :loading="loading"
               @click="createNewOrder"
             >
             </Button>
