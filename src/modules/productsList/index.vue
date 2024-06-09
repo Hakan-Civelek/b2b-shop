@@ -12,7 +12,6 @@ export default {
         brands: null,
         categories: null
       },
-      addBasketLoading: false,
       params: {
         categoryId: [],
         brandIds: []
@@ -51,7 +50,6 @@ export default {
       this.$router.push(`/products/${product.id}`)
     },
     addProductBasket(product) {
-      this.addBasketLoading = true
       const basketItem = {
         productId: product.id,
         quantity: product.quantity,
@@ -63,9 +61,6 @@ export default {
         })
         .catch(() => {
           this.showErrorMessage('An error occurred while adding the product to the basket')
-        })
-        .finally(() => {
-          this.addBasketLoading = false
         })
     },
     filterProducts(node, type) {
@@ -337,7 +332,6 @@ export default {
                           icon="pi pi-shopping-cart"
                           label="Add"
                           :disabled="item.quantity === 0 || item.quantity === undefined"
-                          :loading="addBasketLoading"
                           class="flex-auto white-space-nowrap"
                           @click="addProductBasket(item)"
                         ></Button>
