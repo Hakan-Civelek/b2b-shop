@@ -3,5 +3,6 @@ export default {
   loading: false,
   categories: [],
   totalProducts: 0,
-  basket: []
+  basket: [],
+  brands: []
 }

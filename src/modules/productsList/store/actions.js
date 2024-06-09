@@ -3,8 +3,13 @@ import axios from 'haxios';
 export default {
   fetchProducts({ commit }, params) {
     commit('setLoading', true);
+    let queryString = '';
 
-    return axios.get(`/product${params ? `?categoryId=${params}` : ''}`)
+    if (params) {
+      queryString = Object.keys(params).map(key => '?' + key + '=' + params[key]).join('&');
+    }
+
+    return axios.get(`/product${queryString}`)
       .then(({ data }) => {
         commit('setProducts', data);
         commit('setTotalProducts', data.total);
@@ -23,5 +28,17 @@ export default {
         commit('setCategories', categories);
       })
   },
+  fetchBrands({ commit }) {
+    return axios.get('/brand')
+      .then(({ data }) => {
+        const brands = data.map((brand) => {
+          return {
+            name: brand.name,
+            value: brand.id
+          }
+        })
+        commit('setBrands', brands);
+      })
+  }
 }
 

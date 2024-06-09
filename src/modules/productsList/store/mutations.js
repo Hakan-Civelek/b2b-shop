@@ -14,4 +14,7 @@ export default {
   setBasket(state, value) {
     state.basket = value
   },
+  setBrands(state, value) {
+    state.brands = value
+  },
 }

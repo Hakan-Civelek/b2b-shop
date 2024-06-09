@@ -6,183 +6,10 @@ export default {
   name: 'ProductsList',
   data() {
     return {
-      mockProducts: null,
       layout: 'grid',
-      items: [
-        {
-          label: 'Price Range',
-          items: [
-            {
-              label: '$50 - $100',
-              icon: 'pi pi-dollar',
-              route: '/products'
-            },
-            {
-              label: '$100 - $150',
-              icon: 'pi pi-dollar',
-              route: '/products'
-            },
-            {
-              label: '$150 - $200',
-              icon: 'pi pi-dollar',
-              route: '/products'
-            },
-            {
-              label: '$200 - $250',
-              icon: 'pi pi-dollar',
-              route: '/products'
-            }
-          ]
-        },
-        {
-          label: 'Eveolution Rate',
-          items: [
-            {
-              label: '5 Star',
-              icon: 'pi pi-star',
-              route: '/products'
-            },
-            {
-              label: '4 Star',
-              icon: 'pi pi-star',
-              route: '/products'
-            },
-            {
-              label: '3 Star',
-              icon: 'pi pi-star',
-              route: '/products'
-            },
-            {
-              label: '2 Star',
-              icon: 'pi pi-star',
-              route: '/products'
-            }
-          ]
-        }
-      ],
-      brands: [
-        {
-          label: 'Nike',
-          value: 'Nike',
-          icon: 'pi pi-check',
-          route: '/products',
-          selected: false
-        },
-        {
-          label: 'Adidas',
-          value: 'Adidas',
-          icon: 'pi pi-check',
-          route: '/products',
-          selected: false
-        },
-        {
-          label: 'Puma',
-          value: 'Puma',
-          icon: 'pi pi-check',
-          route: '/products',
-          selected: false
-        },
-        {
-          label: 'Under Armour',
-          value: 'Under Armour',
-          icon: 'pi pi-check',
-          route: '/products',
-          selected: false
-        },
-        {
-          label: 'Reebok',
-          value: 'Reebok',
-          icon: 'pi pi-check',
-          route: '/products',
-          selected: false
-        },
-        {
-          label: 'Asics',
-          value: 'Asics',
-          icon: 'pi pi-check',
-          route: '/products',
-          selected: false
-        },
-        {
-          label: 'Vans',
-          value: 'Vans',
-          icon: 'pi pi-check',
-          route: '/products',
-          selected: false
-        },
-        {
-          label: 'Converse',
-          value: 'Converse',
-          icon: 'pi pi-check',
-          route: '/products',
-          selected: false
-        }
-      ],
       selectedBrands: [],
-      priceRange: [
-        {
-          label: '$50 - $100',
-          value: '$50 - $100',
-          icon: 'pi pi-check',
-          route: '/products',
-          selected: false
-        },
-        {
-          label: '$100 - $150',
-          value: '$100 - $150',
-          icon: 'pi pi-check',
-          route: '/products',
-          selected: false
-        },
-        {
-          label: '$150 - $200',
-          value: '$150 - $200',
-          icon: 'pi pi-check',
-          route: '/products',
-          selected: false
-        },
-        {
-          label: '$200 - $250',
-          value: '$200 - $250',
-          icon: 'pi pi-check',
-          route: '/products',
-          selected: false
-        }
-      ],
-      selectedPriceRange: [],
-      evoulotionRate: [
-        {
-          label: '5 Star',
-          value: '5 Star',
-          icon: 'pi pi-star',
-          route: '/products',
-          selected: false
-        },
-        {
-          label: '4 Star',
-          value: '4 Star',
-          icon: 'pi pi-star',
-          route: '/products',
-          selected: false
-        },
-        {
-          label: '3 Star',
-          value: '3 Star',
-          icon: 'pi pi-star',
-          route: '/products',
-          selected: false
-        },
-        {
-          label: '2 Star',
-          value: '2 Star',
-          icon: 'pi pi-star',
-          route: '/products',
-          selected: false
-        }
-      ],
-      selectedEvoulotionRate: [],
       filters: {
-        brand: null,
+        brands: null,
         priceRange: null,
         evoulotionRate: null,
         categories: null
@@ -193,12 +20,13 @@ export default {
   created() {
     this.fetchProducts()
     this.fetchCategories()
+    this.fetchBrands()
   },
   computed: {
-    ...mapState('productsList', ['products', 'loading', 'categories', 'totalProducts'])
+    ...mapState('productsList', ['products', 'loading', 'categories', 'totalProducts', 'brands'])
   },
   methods: {
-    ...mapActions('productsList', ['fetchProducts', 'fetchCategories']),
+    ...mapActions('productsList', ['fetchProducts', 'fetchCategories', 'fetchBrands']),
     ...mapActions('card', ['addBasket']),
     getSeverity(product) {
       switch (product.inventoryStatus) {
@@ -229,11 +57,14 @@ export default {
       })
     },
     filterProducts() {
+      let params = {}
       if (this.filters.categories) {
-        this.fetchProducts(this.filters.categories.value)
-      } else {
-        this.fetchProducts()
+        params.categoryId = this.filters.categories.value
       }
+      if (this.filters.brands) {
+        params.brandId = this.filters.brands.value
+      }
+        this.fetchProducts(params)
     },
     getThumbnail(product) {
       return product.images.find((image) => image.isThumbnail)
@@ -265,25 +96,24 @@ export default {
         <Divider />
         <h2 class="text-lg font-semibold text-700">Brands</h2>
         <Listbox
-          v-model="selectedBrands"
+          v-model="filters.brands"
           :options="brands"
-          :modelValue="selectedBrands"
+          :modelValue="filters.brands"
           filter
-          multiple
-          optionLabel="label"
+          optionLabel="name"
           class="w-full"
+          @change="filterProducts"
         >
           <template #option="{ option }">
             <div class="flex">
               <Checkbox
                 v-model="option.selected"
-                :key="option.value"
-                :input-id="option.value"
-                :name="option.value"
-                :value="option.value"
+                :key="option.id"
+                :input-id="option.id"
+                :name="option.name"
                 class="mr-3"
               />
-              <label :for="option.value" class="cursor-pointer">{{ option.label }}</label>
+              <label :for="option.id" class="cursor-pointer">{{ option.name }}</label>
             </div>
           </template>
         </Listbox>
@@ -335,7 +165,7 @@ export default {
                     >
                       <div>
                         <span class="font-medium text-secondary text-sm">{{
-                          item.brand.name
+                          item.brand?.name
                         }}</span>
                         <div
                           class="text-lg font-medium text-900 mt-2 cursor-pointer"
