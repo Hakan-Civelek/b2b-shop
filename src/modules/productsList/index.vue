@@ -10,11 +10,13 @@ export default {
       selectedBrands: [],
       filters: {
         brands: null,
-        priceRange: null,
-        evoulotionRate: null,
         categories: null
       },
       addBasketLoading: false,
+      params: {
+        categoryId: [],
+        brandIds: []
+      }
     }
   },
   mixins: [ToastMixin],
@@ -31,10 +33,16 @@ export default {
     }
   },
   computed: {
-    ...mapState('productsList', ['filteredProducts', 'loading', 'categories', 'totalProducts', 'brands']),
+    ...mapState('productsList', [
+      'filteredProducts',
+      'loading',
+      'categories',
+      'totalProducts',
+      'brands'
+    ]),
     currentRoute() {
       return this.$route.query
-    },
+    }
   },
   methods: {
     ...mapActions('productsList', ['fetchProducts', 'fetchCategories', 'fetchBrands']),
@@ -49,28 +57,26 @@ export default {
         quantity: product.quantity,
         updateQuantity: false
       }
-      this.addBasket(basketItem).then(() => {
-        this.showSuccessMessage('Product added to basket')
-      })
-      .catch(() => {
-        this.showErrorMessage('An error occurred while adding the product to the basket')
-      })
-      .finally(() => {
-        this.addBasketLoading = false
-      })
+      this.addBasket(basketItem)
+        .then(() => {
+          this.showSuccessMessage('Product added to basket')
+        })
+        .catch(() => {
+          this.showErrorMessage('An error occurred while adding the product to the basket')
+        })
+        .finally(() => {
+          this.addBasketLoading = false
+        })
     },
-    filterProducts(node, removeCategory = false) {
-      if (!removeCategory) {
-        this.filters.categories = node
+    filterProducts(node, type) {
+      if (type === 'category') {
+        this.params.categoryId = []
+        this.params.categoryId = node
+      } else if (type === 'brand') {
+        this.params.brandIds = []
+        this.params.brandIds = this.filters.brands.map((brand) => brand.value)
       }
-      let params = {}
-      if (this.filters.categories) {
-        params = { categoryId: [this.filters.categories.key] }
-      }
-      if (this.filters.brands) {
-        params.brandIds = this.filters.brands.map((brand) => brand.value)
-      }
-      this.fetchProducts(params)
+      this.fetchProducts(this.params)
     },
     removeFilter() {
       this.fetchProducts()
@@ -118,8 +124,8 @@ export default {
           scrollHeight="250px"
           selectionMode="single"
           selectionKeys="value"
-          @nodeSelect="filterProducts"
-          @nodeUnselect="filterProducts($event, true)"
+          @nodeSelect="filterProducts($event.key, 'category')"
+          @nodeUnselect="filterProducts([], 'category')"
         />
         <Divider />
         <h2 class="text-lg font-semibold text-700">Brands</h2>
@@ -131,7 +137,7 @@ export default {
           multiple
           optionLabel="name"
           class="w-full"
-          @change="filterProducts"
+          @change="filterProducts($event, 'brand')"
         >
           <template #option="{ option }">
             <div class="flex">

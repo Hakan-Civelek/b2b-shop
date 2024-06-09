@@ -42,6 +42,7 @@ export default {
       this.password.id = this.profile.id
       this.updatePassword(this.password).then(() => {
         this.getProfile()
+        this.passwordDialogVisible = false
         this.showSuccessMessage('Password updated successfully')
       })
       .catch(() => {
