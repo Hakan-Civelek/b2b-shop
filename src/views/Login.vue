@@ -5,9 +5,9 @@ export default {
   data() {
     return {
       credentials: {
-        username: 'hakanshop',
-        password: 'pass',
-        tenantId: '1'
+        username: '',
+        password: '',
+        tenantId: ''
       },
       isLoading: false,
     }
