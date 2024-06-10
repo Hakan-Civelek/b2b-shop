@@ -180,12 +180,12 @@ export default {
                       </div>
                     </div>
                     <div class="flex w-2 flex-column md:align-items-end gap-5">
-                      <span class="text-xl font-semibold text-900">${{ item.salesPrice }}</span>
+                      <span class="text-xl font-semibold text-900">${{ item.grossPrice }}</span>
                       <div class="flex flex-row-reverse md:flex-row gap-2">
                       </div>
                     </div>
                     <div class="flex w-2 flex-column md:align-items-end gap-5">
-                      <span class="text-xl font-semibold text-900">${{ item.quantity * item.salesPrice }}</span>
+                      <span class="text-xl font-semibold text-900">${{ item.quantity * item.grossPrice }}</span>
                       <div class="flex flex-row-reverse md:flex-row gap-2">
                       </div>
                     </div>

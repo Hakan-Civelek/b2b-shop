@@ -200,7 +200,7 @@ export default {
                       </div>
                     </div>
                     <div class="flex flex-column md:align-items-end gap-5">
-                      <span class="text-xl font-semibold text-900">${{ item.salesPrice }}</span>
+                      <span class="text-xl font-semibold text-900">${{ item.grossPrice }}</span>
                       <div class="flex flex-row-reverse md:flex-row gap-2">
                         <div class="flex">
                           <InputNumber
@@ -307,7 +307,7 @@ export default {
                       </div>
                     </div>
                     <div class="flex flex-column gap-4 mt-4">
-                      <span class="text-2xl font-semibold text-900">${{ item.salesPrice }}</span>
+                      <span class="text-2xl font-semibold text-900">${{ item.grossPrice }}</span>
                       <div class="flex gap-2">
                         <div class="flex">
                           <InputNumber
