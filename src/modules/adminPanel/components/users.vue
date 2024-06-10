@@ -213,6 +213,11 @@ export default {
           {{ slotProps.data?.authorities?.map((authority) => authority).join(', ') }}
         </template>
       </Column>
+      <Column field="tenantId" header="Tenant ID" sortable>
+        <template #body="slotProps">
+          {{ slotProps.data?.customer?.tenantId }}
+        </template>
+      </Column>
       <Column field="customer" header="Customer" sortable>
         <template #body="slotProps">
           {{ slotProps.data?.customer?.name }}

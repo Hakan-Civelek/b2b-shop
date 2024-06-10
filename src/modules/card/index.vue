@@ -239,15 +239,15 @@ export default {
           <Divider />
           <div class="flex justify-content-between w-full mb-2">
             <h3>Subtotal</h3>
-            <h3>$ {{ items.subTotal.toFixed(2) }}</h3>
+            <h3>$ {{ items.subTotal?.toFixed(2) }}</h3>
           </div>
           <div class="flex justify-content-between w-full mb-2">
             <h3>Total TAX</h3>
-            <h3>$ {{ items.totalTax.toFixed(2) }}</h3>
+            <h3>$ {{ items.totalTax?.toFixed(2) }}</h3>
           </div>
           <div class="flex justify-content-between w-full mb-2">
             <h3>Total Amount</h3>
-            <h3>$ {{ items.totalCost.toFixed(2) }}</h3>
+            <h3>$ {{ items.totalCost?.toFixed(2) }}</h3>
           </div>
           <div class="flex justify-content-between w-full mb-2">
             <Button
