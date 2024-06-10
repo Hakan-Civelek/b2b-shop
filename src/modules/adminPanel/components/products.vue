@@ -21,7 +21,8 @@ export default {
       items: [],
       isLoading: false,
       brands: [],
-      categories: []
+      categories: [],
+      uploadLoading: false,
     }
   },
   components: {
@@ -116,6 +117,7 @@ export default {
       this.submitted = false
     },
     saveProduct() {
+      this.saveLoading = true;
       this.submitted = true
 
       if (this.product?.name?.trim()) {
@@ -135,6 +137,11 @@ export default {
                 life: 3000
               })
             })
+            .finally(() => {
+              this.saveLoading = false;
+              this.productDialog = false
+              this.product = {}
+            })
         } else {
           this.addItem({
             url: '/product',
@@ -151,10 +158,12 @@ export default {
                 life: 3000
               })
             })
+            .finally(() => {
+              this.saveLoading = false;
+              this.productDialog = false
+              this.product = {}
+            })
         }
-
-        this.productDialog = false
-        this.product = {}
       }
     },
     editProduct(product) {
@@ -395,6 +404,7 @@ export default {
           url="api/image"
           accept="image/*"
           customUpload
+          :loading="uploadLoading"
           @uploader="myUploader"
           :auto="true"
           :multiple="true"
@@ -500,7 +510,7 @@ export default {
       </div>
       <template #footer>
         <Button label="Cancel" icon="pi pi-times" text @click="hideDialog" />
-        <Button label="Save" icon="pi pi-check" text @click="saveProduct" />
+        <Button label="Save" icon="pi pi-check" text :loading="saveLoading" @click="saveProduct" />
       </template>
     </Dialog>
 

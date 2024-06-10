@@ -195,7 +195,7 @@ export default {
                           class="text-lg font-medium text-900 mt-2 cursor-pointer"
                           @click="goProductDetail(item)"
                         >
-                          {{ truncate(item.name, 50) }}
+                          {{ truncate(item.name, 45) }}
                         </div>
                       </div>
                     </div>
@@ -302,7 +302,7 @@ export default {
                           class="text-lg font-medium text-900 mt-1 cursor-pointer"
                           @click="goProductDetail(item)"
                         >
-                          {{ truncate(item.name, 50) }}
+                          {{ truncate(item.name, 45) }}
                         </div>
                       </div>
                     </div>
