@@ -82,32 +82,6 @@ export default {
       </div>
     </div>
     <Toast />
-
-    <Dialog
-      v-model:visible="passwordDialogVisible"
-      :style="{ width: '450px' }"
-      header="Change Password"
-      :modal="true"
-      class="p-fluid"
-    >
-      <div class="field">
-        <label for="existPassword">Current Password</label>
-        <Password
-          v-model="password.existPassword"
-          toggleMask
-          id="existPassword"
-          :feedback="false"
-        />
-      </div>
-      <div class="field">
-        <label for="newPassword">New Password</label>
-        <Password v-model="password.newPassword" toggleMask id="newPassword" :feedback="false" />
-      </div>
-      <template #footer>
-        <Button label="Cancel" icon="pi pi-times" text @click="passwordDialogVisible = false" />
-        <Button label="Save" icon="pi pi-check" text @click="resetPassword" />
-      </template>
-    </Dialog>
   </div>
 </template>
 <style></style>

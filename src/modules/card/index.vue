@@ -180,12 +180,12 @@ export default {
                       </div>
                     </div>
                     <div class="flex w-2 flex-column md:align-items-end gap-5">
-                      <span class="text-xl font-semibold text-900">${{ item.salesPrice }}</span>
+                      <span class="text-xl font-semibold text-900">${{ item.grossPrice }}</span>
                       <div class="flex flex-row-reverse md:flex-row gap-2">
                       </div>
                     </div>
                     <div class="flex w-2 flex-column md:align-items-end gap-5">
-                      <span class="text-xl font-semibold text-900">${{ item.quantity * item.salesPrice }}</span>
+                      <span class="text-xl font-semibold text-900">${{ item.quantity * item.grossPrice }}</span>
                       <div class="flex flex-row-reverse md:flex-row gap-2">
                       </div>
                     </div>
@@ -239,15 +239,15 @@ export default {
           <Divider />
           <div class="flex justify-content-between w-full mb-2">
             <h3>Subtotal</h3>
-            <h3>$ {{ items.subTotal }}</h3>
+            <h3>$ {{ items.subTotal?.toFixed(2) }}</h3>
           </div>
           <div class="flex justify-content-between w-full mb-2">
             <h3>Total TAX</h3>
-            <h3>$ {{ items.totalTax }}</h3>
+            <h3>$ {{ items.totalTax?.toFixed(2) }}</h3>
           </div>
           <div class="flex justify-content-between w-full mb-2">
             <h3>Total Amount</h3>
-            <h3>$ {{ items.totalCost }}</h3>
+            <h3>$ {{ items.totalCost?.toFixed(2) }}</h3>
           </div>
           <div class="flex justify-content-between w-full mb-2">
             <Button

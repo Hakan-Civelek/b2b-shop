@@ -10,11 +10,12 @@ export default {
       selectedBrands: [],
       filters: {
         brands: null,
-        priceRange: null,
-        evoulotionRate: null,
         categories: null
       },
-      addBasketLoading: false,
+      params: {
+        categoryId: [],
+        brandIds: []
+      }
     }
   },
   mixins: [ToastMixin],
@@ -31,10 +32,16 @@ export default {
     }
   },
   computed: {
-    ...mapState('productsList', ['filteredProducts', 'loading', 'categories', 'totalProducts', 'brands']),
+    ...mapState('productsList', [
+      'filteredProducts',
+      'loading',
+      'categories',
+      'totalProducts',
+      'brands'
+    ]),
     currentRoute() {
       return this.$route.query
-    },
+    }
   },
   methods: {
     ...mapActions('productsList', ['fetchProducts', 'fetchCategories', 'fetchBrands']),
@@ -43,34 +50,28 @@ export default {
       this.$router.push(`/products/${product.id}`)
     },
     addProductBasket(product) {
-      this.addBasketLoading = true
       const basketItem = {
         productId: product.id,
         quantity: product.quantity,
         updateQuantity: false
       }
-      this.addBasket(basketItem).then(() => {
-        this.showSuccessMessage('Product added to basket')
-      })
-      .catch(() => {
-        this.showErrorMessage('An error occurred while adding the product to the basket')
-      })
-      .finally(() => {
-        this.addBasketLoading = false
-      })
+      this.addBasket(basketItem)
+        .then(() => {
+          this.showSuccessMessage('Product added to basket')
+        })
+        .catch(() => {
+          this.showErrorMessage('An error occurred while adding the product to the basket')
+        })
     },
-    filterProducts(node, removeCategory = false) {
-      if (!removeCategory) {
-        this.filters.categories = node
+    filterProducts(node, type) {
+      if (type === 'category') {
+        this.params.categoryId = []
+        this.params.categoryId = node
+      } else if (type === 'brand') {
+        this.params.brandIds = []
+        this.params.brandIds = this.filters.brands.map((brand) => brand.value)
       }
-      let params = {}
-      if (this.filters.categories) {
-        params = { categoryId: [this.filters.categories.key] }
-      }
-      if (this.filters.brands) {
-        params.brandIds = this.filters.brands.map((brand) => brand.value)
-      }
-      this.fetchProducts(params)
+      this.fetchProducts(this.params)
     },
     removeFilter() {
       this.fetchProducts()
@@ -118,8 +119,8 @@ export default {
           scrollHeight="250px"
           selectionMode="single"
           selectionKeys="value"
-          @nodeSelect="filterProducts"
-          @nodeUnselect="filterProducts($event, true)"
+          @nodeSelect="filterProducts($event.key, 'category')"
+          @nodeUnselect="filterProducts([], 'category')"
         />
         <Divider />
         <h2 class="text-lg font-semibold text-700">Brands</h2>
@@ -131,7 +132,7 @@ export default {
           multiple
           optionLabel="name"
           class="w-full"
-          @change="filterProducts"
+          @change="filterProducts($event, 'brand')"
         >
           <template #option="{ option }">
             <div class="flex">
@@ -194,12 +195,12 @@ export default {
                           class="text-lg font-medium text-900 mt-2 cursor-pointer"
                           @click="goProductDetail(item)"
                         >
-                          {{ truncate(item.name, 50) }}
+                          {{ truncate(item.name, 45) }}
                         </div>
                       </div>
                     </div>
                     <div class="flex flex-column md:align-items-end gap-5">
-                      <span class="text-xl font-semibold text-900">${{ item.salesPrice }}</span>
+                      <span class="text-xl font-semibold text-900">${{ item.grossPrice }}</span>
                       <div class="flex flex-row-reverse md:flex-row gap-2">
                         <div class="flex">
                           <InputNumber
@@ -301,12 +302,12 @@ export default {
                           class="text-lg font-medium text-900 mt-1 cursor-pointer"
                           @click="goProductDetail(item)"
                         >
-                          {{ truncate(item.name, 50) }}
+                          {{ truncate(item.name, 45) }}
                         </div>
                       </div>
                     </div>
                     <div class="flex flex-column gap-4 mt-4">
-                      <span class="text-2xl font-semibold text-900">${{ item.salesPrice }}</span>
+                      <span class="text-2xl font-semibold text-900">${{ item.grossPrice }}</span>
                       <div class="flex gap-2">
                         <div class="flex">
                           <InputNumber
@@ -331,7 +332,6 @@ export default {
                           icon="pi pi-shopping-cart"
                           label="Add"
                           :disabled="item.quantity === 0 || item.quantity === undefined"
-                          :loading="addBasketLoading"
                           class="flex-auto white-space-nowrap"
                           @click="addProductBasket(item)"
                         ></Button>

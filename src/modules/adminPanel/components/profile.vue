@@ -24,6 +24,7 @@ export default {
   },
   methods: {
     ...mapActions('profile', ['fetchProfile', 'updateProfile', 'updatePassword']),
+    ...mapActions('app', ['logout']),
     getProfile() {
       this.fetchProfile().then(({ data }) => {
         this.profile = data
@@ -41,8 +42,9 @@ export default {
     resetPassword() {
       this.password.id = this.profile.id
       this.updatePassword(this.password).then(() => {
-        this.getProfile()
         this.showSuccessMessage('Password updated successfully')
+        this.passwordDialogVisible = false
+        this.logout();
       })
       .catch(() => {
         this.showErrorMessage('Wrong existing password!')

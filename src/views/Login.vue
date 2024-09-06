@@ -5,10 +5,11 @@ export default {
   data() {
     return {
       credentials: {
-        username: 'hakanshop',
-        password: 'pass',
-        tenantId: '1'
-      }
+        username: '',
+        password: '',
+        tenantId: ''
+      },
+      isLoading: false,
     }
   },
   mixins: [ToastMixin],
@@ -18,6 +19,7 @@ export default {
   methods: {
     ...mapActions('app', ['login', 'getLoggedInUser']),
     doLogin() {
+      this.isLoading = true;
       this.login(this.credentials)
         .then(() => {
           this.getLoggedInUser().then(() => {
@@ -27,6 +29,9 @@ export default {
         })
         .catch(() => {
           this.showErrorMessage('Invalid credentials')
+        }).
+        finally(() => {
+          this.isLoading = false;
         })
     }
   }
@@ -44,8 +49,6 @@ export default {
           class="mb-3"
         />
         <div class="text-900 text-3xl font-medium mb-3">Welcome B2B Shop</div>
-        <span class="text-600 font-medium line-height-3">Don't have an account?</span>
-        <a class="font-medium no-underline ml-2 text-blue-500 cursor-pointer">Create today!</a>
       </div>
 
       <div>
@@ -78,7 +81,7 @@ export default {
           @keypress.enter="doLogin"
         />
 
-        <div class="flex align-items-center justify-content-between mb-6">
+        <!-- <div class="flex align-items-center justify-content-between mb-6">
           <div class="flex align-items-center">
             <Checkbox id="rememberme1" :binary="true" v-model="checked1" class="mr-2"></Checkbox>
             <label for="rememberme1">Remember me</label>
@@ -86,9 +89,9 @@ export default {
           <a class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer"
             >Forgot password?</a
           >
-        </div>
+        </div> -->
 
-        <Button label="Sign In" icon="pi pi-user" class="w-full" @click="doLogin"></Button>
+        <Button label="Sign In" icon="pi pi-user" class="w-full" :loading="isLoading" @click="doLogin"></Button>
       </div>
     </div>
   </div>

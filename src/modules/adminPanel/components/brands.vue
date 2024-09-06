@@ -17,7 +17,7 @@ export default {
       filters: {},
       submitted: false,
       items: [],
-      isLoading: true,
+      isLoading: true
     }
   },
   components: {
@@ -26,11 +26,16 @@ export default {
   },
   mixins: [ToastMixin],
   created() {
-    this.initFilters();
-    this.fetchData();
+    this.initFilters()
+    this.fetchData()
   },
   methods: {
-    ...mapActions('managementTable', ['fetchTableDatas', 'deleteTableData', 'updateItem', 'addItem']),
+    ...mapActions('managementTable', [
+      'fetchTableDatas',
+      'deleteTableData',
+      'updateItem',
+      'addItem'
+    ]),
     ...mapActions('adminPanel', ['uploadImage']),
     fetchData() {
       this.isLoading = true
@@ -73,6 +78,10 @@ export default {
             .catch((error) => {
               this.showErrorMessage(error.message)
             })
+            .finally(() => {
+              this.brandDialog = false
+              this.brand = {}
+            })
         } else {
           this.addItem({
             url: '/brand',
@@ -83,6 +92,10 @@ export default {
             })
             .catch((error) => {
               this.showErrorMessage(error.message)
+            })
+            .finally(() => {
+              this.brandDialog = false
+              this.brand = {}
             })
         }
 
@@ -102,7 +115,7 @@ export default {
       this.isLoading = true
 
       return this.deleteTableData({
-        url: `/brand/${this.brand.id}`,
+        url: `/brand/${this.brand.id}`
       })
         .then(() => {
           this.fetchData()
@@ -120,7 +133,7 @@ export default {
       this.filters = {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS }
       }
-    },
+    }
   }
 }
 </script>
